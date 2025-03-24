@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 // import views ที่เกี่ยวข้อง
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import ResetPasswordView from '../views/ResetPasswordView.vue'
+import HomeView from '../views/HomeView.vue';
+import LoginView from '../views/LoginView.vue';
+import RegisterView from '../views/RegisterView.vue';
+import ResetPasswordView from '../views/ResetPasswordView.vue';
+import ProfileView from '../views/ProfileView.vue'; // ตัวอย่างหน้าโปรไฟล์ที่ต้องการการยืนยันตัวตน
 
-// สร้าง router
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -34,6 +34,12 @@ const router = createRouter({
       name: 'reset-password',
       component: ResetPasswordView,
     },
+    // หน้า Profile ที่ต้องมีการยืนยันตัวตน
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
+    },
     // หน้า About
     {
       path: '/about',
@@ -41,7 +47,21 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
   ],
-})
+});
+
+// ใช้ beforeEach ในการตรวจสอบการเข้าสู่ระบบ (Authentication)
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token'); // ตรวจสอบว่า token อยู่ใน localStorage หรือไม่
+
+  // ถ้าผู้ใช้ต้องการเข้าถึงหน้าโปรไฟล์หรือหน้าอื่น ๆ ที่ต้องการการยืนยันตัวตน
+  if (to.name === 'profile' && !token) {
+    // ถ้าไม่มี token, รีไดเรคไปที่หน้า login
+    next({ name: 'login' });
+  } else {
+    // ถ้ามี token หรือเข้าไปยังหน้าอื่น ๆ ที่ไม่ต้องการการยืนยันตัวตน
+    next();
+  }
+});
 
 // ส่งออก router
-export default router
+export default router;
