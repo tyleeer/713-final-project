@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig to read more about this file */
-    /* Language and Environment */
-    "target": "es2024", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    /* Modules */
-    "module": "commonjs", /* Specify what module code is generated. */
-    "rootDir": "./src", /* Specify the root folder within your source files. */
-    /* JavaScript Support */
-    "outDir": "./dist", /* Specify an output folder for all emitted files. */
-    /* Interop Constraints */
-    "esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
-    /* Type Checking */
-    "strict": true, /* Enable all strict type-checking options. */
-    /* Completeness */
-    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
-  }
+    "target": "es2020",  /* กำหนดเวอร์ชัน JavaScript สำหรับการคอมไพล์ */
+    "module": "commonjs", /* ใช้ CommonJS สำหรับโมดูล */
+    "moduleResolution": "node",  /* ใช้การกำหนดโมดูลแบบ Node.js */
+    "rootDir": "./src",  /* กำหนดโฟลเดอร์รากสำหรับไฟล์ source */
+    "outDir": "./dist",  /* กำหนดโฟลเดอร์สำหรับไฟล์ที่คอมไพล์แล้ว */
+    "esModuleInterop": true,  /* รองรับการนำเข้าของโมดูล CommonJS */
+    "forceConsistentCasingInFileNames": true,  /* ตรวจสอบความถูกต้องของการตั้งชื่อไฟล์ */
+    "strict": true,  /* เปิดใช้งานตัวเลือกการตรวจสอบประเภทที่เข้มงวด */
+    "skipLibCheck": true,  /* ข้ามการตรวจสอบไลบรารี .d.ts */
+    "resolveJsonModule": true,  /* รองรับการนำเข้าไฟล์ JSON */
+    "declaration": true,  /* สร้างไฟล์ .d.ts */
+    "strictPropertyInitialization": true,  /* ตรวจสอบการตั้งค่า properties ใน class */
+    "noImplicitAny": true,  /* ห้ามใช้ any โดยไม่ได้กำหนด */
+    "noUnusedLocals": true,  /* ตรวจสอบตัวแปรที่ไม่ได้ใช้งาน */
+    "noUnusedParameters": true  /* ตรวจสอบพารามิเตอร์ที่ไม่ได้ใช้งาน */
+  },
+  "include": ["src/**/*.ts"],  /* รวมไฟล์ TypeScript ทั้งหมดจากโฟลเดอร์ src */
+  "exclude": ["node_modules", "dist"]  /* ยกเว้นโฟลเดอร์ node_modules และ dist */
 }
