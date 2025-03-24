@@ -1,28 +1,23 @@
 // This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "mysql"  // You can change this to PostgreSQL or another database provider
+  url      = env("DATABASE_URL")  // Database connection string from .env file
 }
 
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
-
+// User model represents the users who can log in
 model User {
   id       Int      @id @default(autoincrement())
   username String   @unique
   password String
-  role     Role[]
-  profile  Profile?
+  role     Role[]   @relation("UserRoles") // User can have multiple roles
+  profile  Profile? @relation(fields: [profileId], references: [id])
+  profileId Int?    // Optional field to link to profile
 }
 
 model Profile {
@@ -33,35 +28,35 @@ model Profile {
   profilePic String?
   userId     Int      @unique
   user       User     @relation(fields: [userId], references: [id])
-  Student    Student?
-  Advisor    Advisor?
+  student    Student?
+  advisor    Advisor?
 }
 
 model Role {
   id    Int    @id @default(autoincrement())
   name  String @unique
-  users User[]
+  users User[] @relation("UserRoles")
 }
 
 model Advisor {
   id            Int            @id @default(autoincrement())
   profileId     Int            @unique
   profile       Profile        @relation(fields: [profileId], references: [id])
-  students      Student[]
-  announcements Announcement[]
-  comments      Comment[]
-  appointments  Appointment[]
+  students      Student[]      @relation("AdvisorStudents")
+  appointments  Appointment[]  @relation("AdvisorAppointments")
+  announcements Announcement[] @relation("AdvisorAnnouncements")
+  comments      Comment[]      @relation("AdvisorComments")
 }
 
 model Student {
-  id           Int           @id @default(autoincrement())
-  studentId    String        @unique
-  profileId    Int           @unique
-  profile      Profile       @relation(fields: [profileId], references: [id])
-  advisorId    Int?
-  advisor      Advisor?      @relation(fields: [advisorId], references: [id])
-  comments     Comment[]
-  appointments Appointment[]
+  id            Int            @id @default(autoincrement())
+  studentId     String         @unique
+  profileId     Int            @unique
+  profile       Profile        @relation(fields: [profileId], references: [id])
+  advisorId     Int?
+  advisor       Advisor?       @relation("AdvisorStudents", fields: [advisorId], references: [id])
+  comments      Comment[]      @relation("StudentComments")
+  appointments  Appointment[]  @relation("StudentAppointments")
 }
 
 model Comment {
@@ -71,7 +66,7 @@ model Comment {
   advisorId Int
   student   Student @relation(fields: [studentId], references: [id])
   advisor   Advisor @relation(fields: [advisorId], references: [id])
-  replies   Reply[]
+  replies   Reply[] @relation("CommentReplies")
 }
 
 model Reply {
@@ -102,6 +97,7 @@ model Appointment {
   studentId     Int
   advisorId     Int
   status        AppointmentStatus @default(PENDING)
-  student       Student           @relation(fields: [studentId], references: [id])
-  advisor       Advisor           @relation(fields: [advisorId], references: [id])
+  student       Student           @relation("StudentAppointments", fields: [studentId], references: [id])
+  advisor       Advisor           @relation("AdvisorAppointments", fields: [advisorId], references: [id])
 }
+
