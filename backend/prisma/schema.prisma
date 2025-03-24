@@ -1,21 +1,17 @@
-// This is your Prisma schema file,
-// Learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"  // You can change this to PostgreSQL or another database provider
-  url      = env("DATABASE_URL")  // Database connection string from .env file
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-// User model represents the users who can log in
 model User {
   id       Int      @id @default(autoincrement())
   username String   @unique
   password String
-  role     Role[]   @relation("UserRoles") // User can have multiple roles
+  role     Role[]   @relation("UserRoles")
   profile  Profile? @relation(fields: [profileId], references: [id])
   profileId Int?    // Optional field to link to profile
 }
@@ -100,4 +96,3 @@ model Appointment {
   student       Student           @relation("StudentAppointments", fields: [studentId], references: [id])
   advisor       Advisor           @relation("AdvisorAppointments", fields: [advisorId], references: [id])
 }
-
