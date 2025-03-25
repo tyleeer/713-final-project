@@ -155,7 +155,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f0f2f5;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -164,7 +163,6 @@ export default {
 .register-card {
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 30px;
   width: 100%;
   max-width: 400px;

@@ -19,6 +19,7 @@ html, body, #app {
   padding: 0;
   display: flex;
   flex-direction: column;
+  background-color: white; /* Set the background color to white */
 }
 
 #app {

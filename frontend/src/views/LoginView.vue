@@ -13,7 +13,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <router-link to="/forgot-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
+        <router-link to="/reset-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
       </form>
     </div>
   </div>
