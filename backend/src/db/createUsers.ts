@@ -3,14 +3,15 @@ import { PrismaClient } from '@prisma/client';
 async function createUsers(prisma: PrismaClient): Promise<void> {
     console.log('Seeding users...');
 
+    //password password123
     const users = [
-        { username: 'student001', password: 'password123', role: 'Student' },
-        { username: 'student002', password: 'password123', role: 'Student' },
-        { username: 'student003', password: 'password123', role: 'Student' },
-        { username: 'advisor001', password: 'password123', role: 'Advisor' },
-        { username: 'advisor002', password: 'password123', role: 'Advisor' },
-        { username: 'advisor003', password: 'password123', role: 'Advisor' },
-        { username: 'admin001', password: 'password123', role: 'Admin' },
+        { username: 'student001', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Student' },
+        { username: 'student002', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Student' },
+        { username: 'student003', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Student' },
+        { username: 'advisor001', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Advisor' },
+        { username: 'advisor002', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Advisor' },
+        { username: 'advisor003', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Advisor' },
+        { username: 'admin001', password: '$2a$12$Co8IJcuyth2QRTaemFBw/Ow423ZbDFrQwWp4rUrwsZk6iQm51xLT2', role: 'Admin' },
     ];
 
     for (const userData of users) {

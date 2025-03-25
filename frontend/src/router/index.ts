@@ -51,9 +51,8 @@ const router = createRouter({
 });
 
 // ใช้ beforeEach ในการตรวจสอบการเข้าสู่ระบบ (Authentication)
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const token = localStorage.getItem('token'); // ตรวจสอบว่า token อยู่ใน localStorage หรือไม่
-
   // ถ้าผู้ใช้ต้องการเข้าถึงหน้าโปรไฟล์หรือหน้าอื่น ๆ ที่ต้องการการยืนยันตัวตน
   if (to.name === 'profile' && !token) {
     // ถ้าไม่มี token, รีไดเรคไปที่หน้า login

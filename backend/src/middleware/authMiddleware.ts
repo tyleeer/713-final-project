@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET!; // นำค่าจาก .env มาใช้
 
@@ -12,7 +12,7 @@ export const authenticateJWT = (req: any, res: any, next: any) => {
   }
 
   // ตรวจสอบความถูกต้องของ token โดยใช้ jwt.verify
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+  jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors | null, user: any) => {
     if (err) {
       return res.status(403).send('Invalid token.');
     }

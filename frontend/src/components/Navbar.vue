@@ -2,15 +2,12 @@
   <header class="navbar">
     <nav>
       <RouterLink to="/" class="nav-link">Home</RouterLink>
-      <RouterLink to="/login" class="nav-link">Login</RouterLink>
-      <RouterLink to="/register" class="nav-link">Register</RouterLink>
+      <RouterLink to="/login" class="nav-link" v-if="!isAuthenticated">Login</RouterLink>
+      <RouterLink to="/register" class="nav-link" v-if="!isAuthenticated">Register</RouterLink>
+      <RouterLink to="#" class="nav-link" v-if="isAuthenticated" @click="logout">Logout</RouterLink>
     </nav>
   </header>
 </template>
-
-<script setup lang="ts">
-// ไม่จำเป็นต้องมี RouterView ใน Navbar
-</script>
 
 <style scoped>
 .navbar {
@@ -21,7 +18,7 @@
   width: 100%;
   z-index: 1000;
   padding: 15px 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 nav {
@@ -52,3 +49,23 @@ nav {
   background-color: rgba(249, 247, 247, 0.2);
 }
 </style>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const isAuthenticated = ref(false)
+
+onMounted(() => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    isAuthenticated.value = true
+  }
+})
+
+const logout = () => {
+  localStorage.removeItem('token')
+  isAuthenticated.value = false
+  window.location.href = '/'
+}
+
+</script>

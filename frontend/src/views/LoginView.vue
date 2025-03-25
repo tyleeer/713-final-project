@@ -4,25 +4,27 @@
       <h1 class="login-title">กรุณาเข้าสู่ระบบ</h1>
       <form @submit.prevent="loginUser">
         <div class="form-group">
-          <label for="email" class="form-label">Username</label>
-          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your username" required />
+          <label for="email" class="form-label">StudentID</label>
+          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your StudentID"
+            required />
         </div>
         <div class="form-group">
           <label for="password" class="form-label">Password</label>
-          <input v-model="password" type="password" class="form-control" id="password" placeholder="Enter your password" required />
+          <input v-model="password" type="password" class="form-control" id="password" placeholder="Enter your password"
+            required />
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <div class="reset-password">
-        <router-link to="/reset-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
-      </div>
+          <router-link to="/reset-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
+        </div>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import { http } from '@/utils';
 export default {
   data() {
     return {
@@ -34,12 +36,13 @@ export default {
   methods: {
     async loginUser() {
       try {
-        const response = await axios.post('http://localhost:3000/login', {
+        const response = await http.post('auth/login', {
           email: this.email,
           password: this.password,
         });
         localStorage.setItem('token', response.data.token); // Save token to localStorage
-        this.$router.push('/home'); // Redirect to home page after successful login
+        // this.$router.push('/home'); // Redirect to home page after successful login
+        window.location.href = '/';
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Invalid credentials';
       }
@@ -60,7 +63,7 @@ export default {
 }
 
 .reset-password {
-text-align: right;
+  text-align: right;
 }
 
 .login-container {
@@ -100,20 +103,24 @@ text-align: right;
 
 /* สไตล์สำหรับการ์ด Login */
 .login-card {
-  background-color: #DBE2EF; /* สีพื้นหลังของการ์ด */
+  background-color: #DBE2EF;
+  /* สีพื้นหลังของการ์ด */
   padding: 40px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px; /* ขนาดกล่อง login */
+  max-width: 500px;
+  /* ขนาดกล่อง login */
   text-align: center;
   box-sizing: border-box;
-  min-height: 300px; /* ความสูงขั้นต่ำของการ์ด login */
+  min-height: 300px;
+  /* ความสูงขั้นต่ำของการ์ด login */
 }
 
 /* สไตล์สำหรับหัวข้อ Login */
 .login-title {
-  color: #3F72AF; /* สีหัวข้อ */
+  color: #3F72AF;
+  /* สีหัวข้อ */
   font-size: 2rem;
   margin-bottom: 20px;
 }
@@ -121,12 +128,14 @@ text-align: right;
 /* สไตล์สำหรับฟอร์ม */
 .form-group {
   margin-bottom: 20px;
-  text-align: left; /* กำหนดให้ชิดซ้าย */
+  text-align: left;
+  /* กำหนดให้ชิดซ้าย */
 }
 
 .form-label {
   font-weight: bold;
-  color: #112D4E; /* สีของข้อความ */
+  color: #112D4E;
+  /* สีของข้อความ */
 }
 
 .form-control {
@@ -138,7 +147,8 @@ text-align: right;
 }
 
 .form-control:focus {
-  border-color: #112D4E; /* สีของกรอบเมื่อมีการคลิก */
+  border-color: #112D4E;
+  /* สีของกรอบเมื่อมีการคลิก */
   box-shadow: 0 0 5px rgba(17, 45, 78, 0.2);
 }
 
@@ -155,7 +165,8 @@ button {
 }
 
 button:hover {
-  background-color: #112D4E; /* เมื่อ hover จะเปลี่ยนเป็นสีเข้ม */
+  background-color: #112D4E;
+  /* เมื่อ hover จะเปลี่ยนเป็นสีเข้ม */
 }
 
 /* สไตล์ข้อความผิดพลาด */

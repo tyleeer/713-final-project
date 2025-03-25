@@ -1,16 +1,53 @@
 import express, { Request, Response } from 'express';
 import { registerUser, loginUser, resetPassword } from '../services/authService';
+import { uploadFile } from '../services/uploadFileService'
+import prisma from '../prismaClient';
+import multer from 'multer';
 
-const router = express.Router();
+const router: express.Router = express.Router()
+
+const upload = multer({ storage: multer.memoryStorage() });
+const bucket = process.env.SUPABASE_BUCKET_NAME;
 
 // Route สำหรับการสมัครสมาชิก
-router.post('/register', async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+router.post('/register', upload.single('profilePic'), async (req: Request, res: Response) => {
+
+  const { password, studentId, firstName, lastName, department } = req.body;
   try {
-    const user = await registerUser(email, password);
-    res.status(201).json({ message: 'User registered successfully', user });
-  } catch (error) {
-    res.status(500).json({ message: 'Error registering user', error });
+
+    const file = req.file;
+    if (!file) {
+      throw new Error('Please file uploaded.');
+    }
+
+    const filePath = "profile";
+
+    if (!bucket || !filePath) {
+      return res.status(500).json({ message: 'Bucket name or file path not configured.' });
+    }
+
+    if (firstName === '' || lastName === '' || department === '' || studentId === '' || password === '') {
+      throw new Error('Please fill in all fields');
+    }
+    const { user, profile } = await registerUser(studentId, password, firstName, lastName, department);
+
+    const ouputUrl = await uploadFile(bucket, filePath, file);
+
+    if (ouputUrl) {
+      await prisma.profile.update({
+        where: { id: profile.id },
+        data: {
+          profilePic: ouputUrl
+        }
+      });
+    }
+
+    user.password = '';
+
+    res.status(201).json({ message: 'User registered successfully', user, profile });
+
+  } catch (error: any) {
+    res.status(500).json({ message: error?.message });
   }
 });
 
@@ -20,20 +57,22 @@ router.post('/login', async (req: Request, res: Response) => {
   try {
     const token = await loginUser(email, password);
     res.json({ message: 'Login successful', token });
-  } catch (error) {
-    res.status(401).json({ message: 'Invalid credentials' });
+  } catch (error: any) {
+    res.status(401).json({ message: error?.message });
   }
 });
 
 // Route สำหรับการรีเซ็ตรหัสผ่าน
 router.post('/reset-password', async (req: Request, res: Response) => {
-  const { email, newPassword } = req.body;
+
+  const { studentId: email, newPassword, oldPassword } = req.body;
+
   try {
-    await resetPassword(email, newPassword);
+    await resetPassword(email, oldPassword, newPassword);
     res.json({ message: 'Password reset successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error resetting password', error });
+  } catch (error: any) {
+    res.status(500).json({ message: error?.message });
   }
 });
 
-export default router;
+export default router

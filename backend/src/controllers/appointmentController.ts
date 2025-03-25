@@ -4,6 +4,7 @@ import prisma from '../prismaClient';
 
 // ฟังก์ชันสำหรับสร้างนัดหมาย
 export const createAppointment = async (req: Request, res: Response) => {
+  
   const { studentId, advisorId, topic, requestedDate } = req.body;
 
   // ตรวจสอบว่า advisor และ student มีอยู่ในฐานข้อมูลหรือไม่

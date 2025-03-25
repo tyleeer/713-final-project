@@ -28,13 +28,16 @@ const logout = () => {
 .home-page {
   text-align: center;
   margin-top: 50px;
-  background-color: #F9F7F7; /* สีพื้นหลัง */
-  color: #112D4E; /* สีข้อความหลัก */
+  background-color: #F9F7F7;
+  /* สีพื้นหลัง */
+  color: #112D4E;
+  /* สีข้อความหลัก */
   font-family: Arial, sans-serif;
 }
 
 h1 {
-  color: #3F72AF; /* สีของข้อความ */
+  color: #3F72AF;
+  /* สีของข้อความ */
   font-size: 2rem;
 }
 

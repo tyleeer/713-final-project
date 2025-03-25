@@ -1,17 +1,23 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import prisma from '../prismaClient';
+import bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
 
-const prisma = new PrismaClient();
 const saltRounds = 10;
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION!;
 
 // ฟังก์ชันในการสมัครสมาชิก
-export const registerUser = async (email: string, password: string) => {
-  // ตรวจสอบว่ามีผู้ใช้งานที่ใช้ email นี้แล้วหรือไม่
+export const registerUser = async (
+  studentId: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  department: string,
+) => {
+
+  // ตรวจสอบว่ามีผู้ใช้งานที่ใช้  นี้แล้วหรือไม่
   const existingUser = await prisma.user.findUnique({
-    where: { email },
+    where: { username: studentId },
   });
 
   if (existingUser) {
@@ -23,19 +29,54 @@ export const registerUser = async (email: string, password: string) => {
 
   const user = await prisma.user.create({
     data: {
-      email,
+      username: studentId,
       password: hashedPassword,
     },
   });
 
-  return user;
+  if (!user) {
+    throw new Error('User not created');
+  }
+
+  const profile = await prisma.profile.create({
+    data: {
+      firstName,
+      lastName,
+      department,
+      userId: user.id,
+    }
+  });
+
+  if (!profile) {
+    throw new Error('Profile not created');
+  }
+
+  const countSTD = await prisma.student.count()
+  const student = await prisma.student.create({
+    data: {
+      studentId: `${new Date().getFullYear() + 543}`.slice(2, 4) + countSTD.toString().padStart(4, '0'),
+      profileId: profile.id,
+    }
+  })
+
+  if (!student) {
+    throw new Error('Student not created');
+  }
+
+  return { user, profile, student };
 };
 
 // ฟังก์ชันในการเข้าสู่ระบบ
 export const loginUser = async (email: string, password: string) => {
+
+  if (!email || !password) {
+    throw new Error('Email and password are required');
+  }
+
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { username: email },
   });
+
 
   if (!user) {
     throw new Error('User not found');
@@ -48,21 +89,33 @@ export const loginUser = async (email: string, password: string) => {
   }
 
   // สร้าง JWT token
-  const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRATION,
-  });
+  const token = jwt.sign({ userId: user.id, email: user.username }, JWT_SECRET, {
+    expiresIn: JWT_EXPIRATION || '1h',
+  } as jwt.SignOptions);
 
   return token;
 };
 
 // ฟังก์ชันในการรีเซ็ตรหัสผ่าน
-export const resetPassword = async (email: string, newPassword: string) => {
+export const resetPassword = async (email: string, oldPassword: string, newPassword: string) => {
+
+  if (!email || !oldPassword || !newPassword) {
+    throw new Error('Email, old password, and new password are required');
+  }
+
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { username: email },
   });
 
   if (!user) {
     throw new Error('User not found');
+  }
+
+  console.log(oldPassword)
+
+  const comparePassword = await bcrypt.compare(oldPassword, user.password);
+  if (!comparePassword) {
+    throw new Error('Invalid old password');
   }
 
   // เข้ารหัสรหัสผ่านใหม่
@@ -70,7 +123,7 @@ export const resetPassword = async (email: string, newPassword: string) => {
 
   // อัปเดตรหัสผ่านในฐานข้อมูล
   await prisma.user.update({
-    where: { email },
+    where: { username: email },
     data: { password: hashedPassword },
   });
 };

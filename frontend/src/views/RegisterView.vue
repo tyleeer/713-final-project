@@ -6,86 +6,43 @@
         <div class="form-row">
           <div class="form-group">
             <label for="firstName" class="form-label">First Name</label>
-            <input
-              v-model="firstName"
-              type="text"
-              class="form-control"
-              id="firstName"
-              placeholder="Enter first name"
-              required
-            />
+            <input v-model="firstName" type="text" class="form-control" id="firstName" placeholder="Enter first name"
+              required />
           </div>
           <div class="form-group">
             <label for="lastName" class="form-label">Last Name</label>
-            <input
-              v-model="lastName"
-              type="text"
-              class="form-control"
-              id="lastName"
-              placeholder="Enter last name"
-              required
-            />
+            <input v-model="lastName" type="text" class="form-control" id="lastName" placeholder="Enter last name"
+              required />
           </div>
         </div>
 
         <div class="form-group">
           <label for="studentId" class="form-label">Student ID</label>
-          <input
-            v-model="studentId"
-            type="text"
-            class="form-control"
-            id="studentId"
-            placeholder="Enter student ID"
-            required
-          />
+          <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter student ID"
+            required />
         </div>
 
         <div class="form-group">
           <label for="department" class="form-label">Department</label>
-          <input
-            v-model="department"
-            type="text"
-            class="form-control"
-            id="department"
-            placeholder="Enter department"
-            required
-          />
+          <input v-model="department" type="text" class="form-control" id="department" placeholder="Enter department"
+            required />
         </div>
-
-
 
         <div class="form-group">
           <label for="profilePic" class="form-label">Profile Picture</label>
-          <input
-            type="file"
-            class="form-control file-input"
-            id="profilePic"
-            @change="onFileChange"
-          />
+          <input type="file" class="form-control file-input" id="profilePic" @change="onFileChange" required />
+          <p v-if="fileName" class="file-name">{{ fileName }}</p>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label for="password" class="form-label">Password</label>
-            <input
-              v-model="password"
-              type="password"
-              class="form-control"
-              id="password"
-              placeholder="Enter password"
-              required
-            />
+            <input v-model="password" type="password" class="form-control" id="password" placeholder="Enter password"
+              required />
           </div>
           <div class="form-group">
             <label for="confirmPassword" class="form-label">Confirm Password</label>
-            <input
-              v-model="confirmPassword"
-              type="password"
-              class="form-control"
-              id="confirmPassword"
-              placeholder="Confirm password"
-              required
-            />
+            <input v-model="confirmPassword" type="password" class="form-control" id="confirmPassword"
+              placeholder="Confirm password" required />
           </div>
         </div>
 
@@ -98,7 +55,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { http } from '@/utils';
 
 export default {
   data() {
@@ -112,11 +69,13 @@ export default {
       password: '',
       confirmPassword: '',
       errorMessage: '',
+      fileName: '',
     };
   },
   methods: {
     onFileChange(event) {
       this.profilePic = event.target.files[0];
+      this.fileName = this.profilePic.name;
     },
     async registerUser() {
       if (this.password !== this.confirmPassword) {
@@ -124,23 +83,29 @@ export default {
         return;
       }
 
-      try {
-        const formData = new FormData();
-        formData.append('studentId', this.studentId);
-        formData.append('firstName', this.firstName);
-        formData.append('lastName', this.lastName);
-        formData.append('department', this.department);
-        formData.append('profilePic', this.profilePic);
-        formData.append('email', this.email);
-        formData.append('password', this.password);
+      const formData = new FormData();
+      formData.append('studentId', this.studentId);
+      formData.append('firstName', this.firstName);
+      formData.append('lastName', this.lastName);
+      formData.append('department', this.department);
+      formData.append('profilePic', this.profilePic);
+      // formData.append('email', this.email);
+      formData.append('password', this.password);
 
-        const response = await axios.post('http://localhost:3000/register', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
+      // console.log('Form data:', formData);
+      // return
+
+      try {
+        const response = await http.postForm('auth/register', formData, {
+          onUploadProgress: (progressEvent) => {
+            console.log('Upload progress:', Math.round((progressEvent.loaded / progressEvent.total) * 100), '%');
           },
         });
 
-        this.$router.push('/login');
+        if (response.status === 201) {
+          this.errorMessage = 'User registered successfully';
+          this.$router.push('/login');
+        }
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Error registering user';
       }
@@ -233,6 +198,12 @@ export default {
   text-align: center;
   margin-top: 10px;
   font-size: 0.9rem;
+}
+
+
+.file-name {
+  font-size: 0.9rem;
+  color: #333;
 }
 
 @media (max-width: 480px) {
