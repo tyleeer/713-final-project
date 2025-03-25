@@ -48,18 +48,36 @@ export default {
 
 <style scoped>
 /* การตั้งค่าสไตล์หลัก */
+.login-page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F9F7F7;
+  padding: 20px;
+}
+
 .login-container {
   background-color: #F9F7F7;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  margin-top: 50px;
   height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;
 }
+
 .login-card {
-  border: 2px solid red; /* ✅ ลองเพิ่มเส้นกรอบชั่วคราว */
+  background-color: #DBE2EF;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  /* ลบ border สีแดงทดสอบ */
 }
 
 .login-box {
@@ -70,6 +88,7 @@ export default {
   width: 400px;
   text-align: center;
 }
+
 
 
 

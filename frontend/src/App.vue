@@ -10,26 +10,28 @@ import Navbar from './components/Navbar.vue';
 </script>
 
 <style>
-html, body {
+html, body, #app {
+  width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+
 }
 
+
 #app {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* ทำให้เต็มหน้าจอ */
 }
 
 .main-content {
-  flex: 1; /* ขยายเนื้อหาให้เต็มจอ */
-  padding: 20px; /* เพิ่มพื้นที่ให้ไม่ติดขอบ */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.content {
-  margin-top: 70px; /* ปรับให้ Navbar ไม่ทับ */
+.sidebar {
+  display: none; /* ทดสอบว่ามันเป็นสาเหตุของแถบดำหรือเปล่า */
 }
-
-
 </style>
