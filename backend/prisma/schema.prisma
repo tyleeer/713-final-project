@@ -56,27 +56,32 @@ model Student {
 }
 
 model Comment {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   content   String
   studentId Int
   advisorId Int
-  student   Student @relation(fields: [studentId], references: [id])
-  advisor   Advisor @relation(fields: [advisorId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id])
+  advisor   Advisor  @relation(fields: [advisorId], references: [id])
   replies   Reply[]
+  createdAt DateTime @default(now())
 }
 
 model Reply {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   content   String
   commentId Int
-  comment   Comment @relation(fields: [commentId], references: [id])
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Announcement {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  topic     String   @default("")
+  content   String   @default("")
   fileUrl   String
   advisorId Int
-  advisor   Advisor @relation(fields: [advisorId], references: [id])
+  advisor   Advisor  @relation(fields: [advisorId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 enum AppointmentStatus {
