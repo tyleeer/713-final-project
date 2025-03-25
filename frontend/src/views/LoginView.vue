@@ -5,7 +5,7 @@
       <form @submit.prevent="loginUser">
         <div class="form-group">
           <label for="email" class="form-label">Username</label>
-          <input v-model="email" type="email" class="form-control" id="email" placeholder="Enter your email" required />
+          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your username" required />
         </div>
         <div class="form-group">
           <label for="password" class="form-label">Password</label>

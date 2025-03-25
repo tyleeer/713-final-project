@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div id="app">
     <Navbar />
-    <RouterView />
+    <div class="main-content">
+      <RouterView />
+    </div>
   </div>
 </template>
 
@@ -15,9 +17,9 @@ html, body, #app {
   height: 100%;
   margin: 0;
   padding: 0;
-
+  display: flex;
+  flex-direction: column;
 }
-
 
 #app {
   min-height: 100vh;
@@ -29,9 +31,12 @@ html, body, #app {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center; /* Centers the content vertically */
+  align-items: center; /* Centers the content horizontally */
+  padding: 0 10px; /* Add padding to prevent content from touching the edges */
 }
 
 .sidebar {
-  display: none; /* ทดสอบว่ามันเป็นสาเหตุของแถบดำหรือเปล่า */
+  display: none; /* Commented out for testing purposes */
 }
 </style>
