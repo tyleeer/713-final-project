@@ -1,7 +1,7 @@
 import { Request,Response } from "express";
 import * as commentService from '../services/commentService';
 
-// ส่งcomment นักศึกษาไปที่อาจารย์
+// ส่งข้อความนักศึกษาไปที่อาจารย์
 export const createCommend = async (req:Request, res:Response) =>{
     try{
         const {advisorId , content} = req.body;
@@ -62,7 +62,7 @@ export const getAdvisorConversations = async (req: Request, res: Response) => {
     }
   };  
   
- // ดึงการพูดคุยของนักศึกษากับอาจารย์
+ // ดึงข้อความของนักศึกษากับอาจารย์
 export const getConversation = async (req: Request, res: Response) => {
     try {
       const studentId = parseInt(req.params.studentId);
