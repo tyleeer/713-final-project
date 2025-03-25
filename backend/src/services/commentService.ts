@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+login,regis,reset_DONE
 // import { getAdvisor } from "./studentService";
+
+import { getAdvisor } from "./studentService";
+main
 
 const prisma = new  PrismaClient();
 
