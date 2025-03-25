@@ -1,12 +1,21 @@
 <template>
-  <div class="login">
-    <h1>Login</h1>
-    <form @submit.prevent="loginUser">
-      <input v-model="email" type="email" placeholder="Email" required />
-      <input v-model="password" type="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="login-title">Login</h1>
+      <form @submit.prevent="loginUser">
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input v-model="email" type="email" class="form-control" id="email" placeholder="Enter your email" required />
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input v-model="password" type="password" class="form-control" id="password" placeholder="Enter your password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <router-link to="/forgot-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
+      </form>
+    </div>
   </div>
 </template>
 
@@ -27,7 +36,7 @@ export default {
           email: this.email,
           password: this.password,
         });
-        localStorage.setItem('token', response.data.token);  // Save token to localStorage
+        localStorage.setItem('token', response.data.token); // Save token to localStorage
         this.$router.push('/home'); // Redirect to home page after successful login
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Invalid credentials';
@@ -36,3 +45,79 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* การตั้งค่าสไตล์หลัก */
+.login-container {
+  background-color: #F9F7F7; /* พื้นหลังของหน้า */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* ทำให้ความสูงของหน้าเต็มหน้าจอ */
+  margin: 0;
+}
+
+/* สไตล์สำหรับการ์ด Login */
+.login-card {
+  background-color: #DBE2EF; /* สีพื้นหลังของการ์ด */
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px; /* ขนาดกล่อง login */
+  text-align: center;
+}
+
+.login-title {
+  color: #3F72AF; /* สีหัวข้อ */
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* สไตล์สำหรับฟอร์ม */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: bold;
+  color: #112D4E; /* สีของข้อความ */
+}
+
+.form-control {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #3F72AF;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  border-color: #112D4E; /* สีของกรอบเมื่อมีการคลิก */
+  box-shadow: 0 0 5px rgba(17, 45, 78, 0.2);
+}
+
+/* สไตล์สำหรับปุ่ม Login */
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #3F72AF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #112D4E; /* เมื่อ hover จะเปลี่ยนเป็นสีเข้ม */
+}
+
+/* สไตล์ข้อความผิดพลาด */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 10px;
+}
+</style>

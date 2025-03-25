@@ -39,6 +39,7 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: ProfileView,
+      meta: { requiresAuth: true }, // กำหนดว่าเส้นทางนี้ต้องการการยืนยันตัวตน
     },
     // หน้า About
     {
@@ -53,12 +54,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token'); // ตรวจสอบว่า token อยู่ใน localStorage หรือไม่
 
-  // ถ้าผู้ใช้ต้องการเข้าถึงหน้าโปรไฟล์หรือหน้าอื่น ๆ ที่ต้องการการยืนยันตัวตน
-  if (to.name === 'profile' && !token) {
+  // ถ้าเส้นทางที่กำหนดใน meta.requiresAuth ต้องการการยืนยันตัวตน
+  if (to.meta.requiresAuth && !token) {
     // ถ้าไม่มี token, รีไดเรคไปที่หน้า login
     next({ name: 'login' });
   } else {
-    // ถ้ามี token หรือเข้าไปยังหน้าอื่น ๆ ที่ไม่ต้องการการยืนยันตัวตน
+    // ถ้ามี token หรือเส้นทางนั้นไม่ต้องการการยืนยันตัวตน
     next();
   }
 });
