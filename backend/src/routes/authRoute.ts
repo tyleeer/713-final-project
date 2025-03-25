@@ -53,9 +53,9 @@ router.post('/register', upload.single('profilePic'), async (req: Request, res: 
 
 // Route สำหรับการเข้าสู่ระบบ
 router.post('/login', async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
   try {
-    const token = await loginUser(username, password);
+    const token = await loginUser(email, password);
     res.json({ message: 'Login successful', token });
   } catch (error: any) {
     res.status(401).json({ message: error?.message });
@@ -65,10 +65,10 @@ router.post('/login', async (req: Request, res: Response) => {
 // Route สำหรับการรีเซ็ตรหัสผ่าน
 router.post('/reset-password', async (req: Request, res: Response) => {
 
-  const { username, newPassword, oldPassword } = req.body;
+  const { studentId: email, newPassword, oldPassword } = req.body;
 
   try {
-    await resetPassword(username, oldPassword, newPassword);
+    await resetPassword(email, oldPassword, newPassword);
     res.json({ message: 'Password reset successfully' });
   } catch (error: any) {
     res.status(500).json({ message: error?.message });

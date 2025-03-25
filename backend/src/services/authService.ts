@@ -67,14 +67,14 @@ export const registerUser = async (
 };
 
 // ฟังก์ชันในการเข้าสู่ระบบ
-export const loginUser = async (username: string, password: string) => {
+export const loginUser = async (email: string, password: string) => {
 
-  if (!username || !password) {
-    throw new Error('Username and password are required');
+  if (!email || !password) {
+    throw new Error('Email and password are required');
   }
 
   const user = await prisma.user.findUnique({
-    where: { username },
+    where: { username: email },
   });
 
 
@@ -97,14 +97,14 @@ export const loginUser = async (username: string, password: string) => {
 };
 
 // ฟังก์ชันในการรีเซ็ตรหัสผ่าน
-export const resetPassword = async (username: string, oldPassword: string, newPassword: string) => {
+export const resetPassword = async (email: string, oldPassword: string, newPassword: string) => {
 
-  if (!username || !oldPassword || !newPassword) {
-    throw new Error('Username, old password, and new password are required');
+  if (!email || !oldPassword || !newPassword) {
+    throw new Error('Email, old password, and new password are required');
   }
 
   const user = await prisma.user.findUnique({
-    where: { username: username },
+    where: { username: email },
   });
 
   if (!user) {
@@ -123,7 +123,7 @@ export const resetPassword = async (username: string, oldPassword: string, newPa
 
   // อัปเดตรหัสผ่านในฐานข้อมูล
   await prisma.user.update({
-    where: { username },
+    where: { username: email },
     data: { password: hashedPassword },
   });
 };
