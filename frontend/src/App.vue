@@ -14,7 +14,6 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* ป้องกันการเลื่อนแนวนอน */
 }
 
 #app {
@@ -27,5 +26,10 @@ html, body {
   flex: 1; /* ขยายเนื้อหาให้เต็มจอ */
   padding: 20px; /* เพิ่มพื้นที่ให้ไม่ติดขอบ */
 }
+
+.content {
+  margin-top: 70px; /* ปรับให้ Navbar ไม่ทับ */
+}
+
 
 </style>

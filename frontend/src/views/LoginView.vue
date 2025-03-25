@@ -49,13 +49,29 @@ export default {
 <style scoped>
 /* การตั้งค่าสไตล์หลัก */
 .login-container {
-  background-color: #F9F7F7; /* พื้นหลังของหน้า */
+  background-color: #F9F7F7;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* ทำให้ความสูงของหน้าเต็มหน้าจอ */
+  height: 100vh;
+  width: 100vw;
   margin: 0;
+  padding: 0;
 }
+.login-card {
+  border: 2px solid red; /* ✅ ลองเพิ่มเส้นกรอบชั่วคราว */
+}
+
+.login-box {
+  background: #dde5f4;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
+
 
 /* สไตล์สำหรับการ์ด Login */
 .login-card {
@@ -66,8 +82,11 @@ export default {
   width: 100%;
   max-width: 500px; /* ขนาดกล่อง login */
   text-align: center;
+  box-sizing: border-box;
+  min-height: 300px; /* ความสูงขั้นต่ำของการ์ด login */
 }
 
+/* สไตล์สำหรับหัวข้อ Login */
 .login-title {
   color: #3F72AF; /* สีหัวข้อ */
   font-size: 2rem;
