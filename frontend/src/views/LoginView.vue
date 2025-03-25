@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-card">
-      <h1 class="login-title">Login</h1>
+      <h1 class="login-title">กรุณาเข้าสู่ระบบ</h1>
       <form @submit.prevent="loginUser">
         <div class="form-group">
           <label for="email" class="form-label">Username</label>
@@ -13,7 +13,9 @@
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <div class="reset-password">
         <router-link to="/reset-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
+      </div>
       </form>
     </div>
   </div>
@@ -55,6 +57,10 @@ export default {
   align-items: center;
   background-color: #F9F7F7;
   padding: 20px;
+}
+
+.reset-password {
+text-align: right;
 }
 
 .login-container {
