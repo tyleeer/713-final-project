@@ -4,7 +4,7 @@
       <h1 class="login-title">Login</h1>
       <form @submit.prevent="loginUser">
         <div class="form-group">
-          <label for="email" class="form-label">Email</label>
+          <label for="email" class="form-label">Username</label>
           <input v-model="email" type="email" class="form-control" id="email" placeholder="Enter your email" required />
         </div>
         <div class="form-group">
@@ -115,6 +115,7 @@ export default {
 /* สไตล์สำหรับฟอร์ม */
 .form-group {
   margin-bottom: 20px;
+  text-align: left; /* กำหนดให้ชิดซ้าย */
 }
 
 .form-label {
