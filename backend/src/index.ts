@@ -6,6 +6,7 @@ import uploadRoute from './routes/uploadRoute';
 import studentRoute from './routes/studentRoute'
 import authRoute from './routes/authRoute';
 import advisorRoute from './routes/advisorRoute';
+import announcementRoute from './routes/announcementRoute';
 dotenv.config();
 
 const port = 3000;
@@ -19,6 +20,7 @@ app.use('/auth', authRoute);
 app.use('/upload', uploadRoute);
 app.use('/student', studentRoute);
 app.use('/advisor', advisorRoute);
+app.use('/announcement', announcementRoute);
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);

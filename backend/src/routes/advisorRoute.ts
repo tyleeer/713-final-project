@@ -4,6 +4,7 @@ import { checkAdvisor, checkStudent, createAnnouncement, createComment, checkCom
 import { getConversation } from '../services/commentService';
 import express, { Request, Response } from 'express';
 import { Announcement, Comment, Reply } from '../models/types';
+// import { authenticateJWT } from '../middleware/authMiddleware';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
