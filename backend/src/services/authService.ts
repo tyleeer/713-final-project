@@ -66,6 +66,65 @@ export const registerUser = async (
   return { user, profile, student };
 };
 
+export const registerAdvisor = async (
+  studentId: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  department: string,
+  role: string,
+) => {
+
+  // ตรวจสอบว่ามีผู้ใช้งานที่ใช้  นี้แล้วหรือไม่
+  const existingUser = await prisma.user.findUnique({
+    where: { username: studentId },
+  });
+
+  if (existingUser) {
+    throw new Error('User already exists');
+  }
+
+  // เข้ารหัสรหัสผ่านก่อนบันทึก
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  const user = await prisma.user.create({
+    data: {
+      username: studentId,
+      password: hashedPassword,
+      role: role,
+    },
+  });
+
+  if (!user) {
+    throw new Error('User not created');
+  }
+
+  const profile = await prisma.profile.create({
+    data: {
+      firstName,
+      lastName,
+      department,
+      userId: user.id,
+    }
+  });
+
+  if (!profile) {
+    throw new Error('Profile not created');
+  }
+
+  const advisor = await prisma.advisor.create({
+    data: {
+      profileId: profile.id,
+    }
+  })
+
+  if (!advisor) {
+    throw new Error('Advisor not created');
+  }
+
+  return { user, profile, advisor };
+};
+
 // ฟังก์ชันในการเข้าสู่ระบบ
 export const loginUser = async (email: string, password: string) => {
 
@@ -89,11 +148,11 @@ export const loginUser = async (email: string, password: string) => {
   }
 
   // สร้าง JWT token
-  const token = jwt.sign({ userId: user.id, email: user.username }, JWT_SECRET, {
+  const token = jwt.sign({ userId: user.id, email: user.username, role: user.role }, JWT_SECRET, {
     expiresIn: JWT_EXPIRATION || '1h',
   } as jwt.SignOptions);
 
-  return token;
+  return { token, role: user.role };
 };
 
 // ฟังก์ชันในการรีเซ็ตรหัสผ่าน

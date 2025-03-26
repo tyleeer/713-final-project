@@ -5,8 +5,15 @@ declare global {
         interface Request {
             user?: {
                 userId: string;
-                // Add other properties if needed
-            };
+                email: string;
+                role: string;
+                student: {
+                    id: string;
+                }
+                advisor: {
+                    id: string;
+                }
+            }
         }
     }
 }

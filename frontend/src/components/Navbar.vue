@@ -1,5 +1,3 @@
-
-
 <template>
   <header class="fixed-navbar">
     <div class="navbar-container">
@@ -9,12 +7,10 @@
       <nav class="nav-links">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
         <RouterLink to="/announcement" class="nav-link" v-if="isAuthenticated">Announcement</RouterLink>
-        <RouterLink to="/StudentList" class="nav-link" v-if="isAuthenticated">Student List</RouterLink>
-
+        <RouterLink to="/StudentList" class="nav-link" v-if="isAuthenticated && isAdmin">Student List</RouterLink>
         <RouterLink to="/login" class="nav-link" v-if="!isAuthenticated">Login</RouterLink>
         <RouterLink to="/register" class="nav-link" v-if="!isAuthenticated">Register</RouterLink>
-        <RouterLink to="/advisorReg" class="nav-link" v-if="!isAuthenticated">Add Advisor</RouterLink>
-        <RouterLink to="/reset-password" class="nav-link" v-if="!isAuthenticated">Reset password</RouterLink>
+        <RouterLink to="/advisorReg" class="nav-link" v-if="isAuthenticated && isAdmin">Add Advisor</RouterLink>
         <a href="#" class="nav-link" v-if="isAuthenticated" @click.prevent="logout">Logout</a>
       </nav>
     </div>
@@ -114,16 +110,32 @@
 import { ref, onMounted } from 'vue'
 
 const isAuthenticated = ref(false)
+const isAdmin = ref(false)
+const isStudent = ref(false)
+const isAdvisor = ref(false)
 
 onMounted(() => {
   const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
   if (token) {
     isAuthenticated.value = true
+  }
+
+  switch (role?.toLowerCase()) {
+    case 'admin':
+      isAdmin.value = true
+      break
+    case 'student':
+      isStudent.value = true
+      break
+    case 'advisor':
+      isAdvisor.value = true
+      break
   }
 })
 
 const logout = () => {
-  localStorage.removeItem('token')
+  localStorage.clear()
   isAuthenticated.value = false
   window.location.href = '/'
 }
