@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar />
-    <div class="main-content">
+    <div class="main-content overflow-y-scroll">
       <RouterView />
     </div>
   </div>
@@ -35,6 +35,7 @@ html, body, #app {
   justify-content: center; /* Centers the content vertically */
   align-items: center; /* Centers the content horizontally */
   padding: 0 10px; /* Add padding to prevent content from touching the edges */
+  margin-top: 80px;
 }
 
 .sidebar {
