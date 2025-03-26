@@ -2,7 +2,9 @@
   <header class="fixed-navbar">
     <div class="navbar-container">
       <RouterLink to="/" class="logo">
-        <span class="logo-text">YourApp</span>
+
+        <img src="https://img2.pic.in.th/pic/645f84e1c97e5223381b503078b637ba.png" alt="Advisdent Logo" class="logo-image">
+        <span class="logo-text">Advisdent</span>
       </RouterLink>
       <nav class="nav-links">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
@@ -20,6 +22,24 @@
 
 
 <style scoped>
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-image {
+  height: 50px; /* Reduced from 40px to make it smaller */
+  margin-right: 8px; /* Slightly reduced spacing */
+}
+
+.logo-text {
+  font-weight: bold;
+  color: #ffffff; /* Adjust color as needed */
+  font-size: 16px; /* Optional: adjust text size if needed */
+}
+
 .fixed-navbar {
   position: fixed;
   top: 0;
