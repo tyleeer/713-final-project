@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Register Controller
 export const register = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password, role } = req.body; // รับ role จาก body
 
   // ตรวจสอบว่ามีผู้ใช้ที่สมัครแล้วหรือไม่
   const existingUser = await prisma.user.findUnique({
@@ -22,10 +22,12 @@ export const register = async (req: Request, res: Response) => {
   // เข้ารหัสรหัสผ่าน
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  // สร้างผู้ใช้ใหม่พร้อม role ที่ได้รับ
   const user = await prisma.user.create({
     data: {
       username,
       password: hashedPassword,
+      role: role || 'student', // กำหนด role ที่รับมาหรือใช้ 'student' เป็นค่าเริ่มต้น
     },
   });
 
@@ -50,9 +52,9 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  // สร้าง JWT token
+  // สร้าง JWT token พร้อม role
   const token = jwt.sign(
-    { userId: user.id, username: user.username },
+    { userId: user.id, username: user.username, role: user.role }, // เพิ่ม role ใน payload
     JWT_SECRET,
     { expiresIn: '1h' }
   );

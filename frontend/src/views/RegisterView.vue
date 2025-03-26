@@ -29,10 +29,16 @@
         </div>
 
         <div class="form-group">
+          <label for="role" class="form-label">Role</label>
+          <input v-model="role" type="text" class="form-control" id="role" placeholder="Enter role" value="student" readonly />
+        </div>
+
+        <div class="form-group">
           <label for="profilePic" class="form-label">Profile Picture</label>
           <input type="file" class="form-control file-input" id="profilePic" @change="onFileChange" required />
           <p v-if="fileName" class="file-name">{{ fileName }}</p>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="password" class="form-label">Password</label>
@@ -65,9 +71,9 @@ export default {
       lastName: '',
       department: '',
       profilePic: null,
-      email: '',
       password: '',
       confirmPassword: '',
+      role: 'student',  // กำหนด role เป็น 'student' โดยอัตโนมัติ
       errorMessage: '',
       fileName: '',
     };
@@ -88,20 +94,12 @@ export default {
       formData.append('firstName', this.firstName);
       formData.append('lastName', this.lastName);
       formData.append('department', this.department);
+      formData.append('role', this.role);  // ส่ง role ไปด้วย
       formData.append('profilePic', this.profilePic);
-      // formData.append('email', this.email);
       formData.append('password', this.password);
 
-      // console.log('Form data:', formData);
-      // return
-
       try {
-        const response = await http.postForm('auth/register', formData, {
-          onUploadProgress: (progressEvent) => {
-            console.log('Upload progress:', Math.round((progressEvent.loaded / progressEvent.total) * 100), '%');
-          },
-        });
-
+        const response = await http.postForm('auth/register', formData);
         if (response.status === 201) {
           this.errorMessage = 'User registered successfully';
           this.$router.push('/login');
@@ -113,6 +111,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* เพิ่มสไตล์ที่ต้องการ */
+</style>
+
 
 <style scoped>
 .register-page {
