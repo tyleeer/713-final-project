@@ -58,7 +58,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #F9F7F7;
   padding: 20px;
 }
 
@@ -67,13 +66,11 @@ export default {
 }
 
 .login-container {
-  background-color: #F9F7F7;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   margin-top: 50px;
-  height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;

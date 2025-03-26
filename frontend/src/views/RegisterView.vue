@@ -112,10 +112,6 @@ export default {
 };
 </script>
 
-<style scoped>
-/* เพิ่มสไตล์ที่ต้องการ */
-</style>
-
 
 <style scoped>
 .register-page {
