@@ -6,6 +6,8 @@ import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import ResetPasswordView from '../views/ResetPasswordView.vue';
 import ProfileView from '../views/AboutView.vue'; // ตัวอย่างหน้าโปรไฟล์ที่ต้องการการยืนยันตัวตน
+import AdvisorChat from '../views/AdvisorChat.vue';
+import StudentChat from '../views/StudentChat.vue';
 
 
 const router = createRouter({
@@ -47,6 +49,16 @@ const router = createRouter({
       name: 'about',
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/advisor-chat',
+      name: 'advisor-chat',
+      component: AdvisorChat
+    },
+    {
+      path: '/student-chat',
+      name: 'student-chat',
+      component: StudentChat
+    }
   ],
 });
 

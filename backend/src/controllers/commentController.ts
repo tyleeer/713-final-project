@@ -5,6 +5,9 @@ import * as commentService from '../services/commentService';
 export const createCommend = async (req:Request, res:Response) =>{
     try{
         const {advisorId , content} = req.body;
+        if (!req.user || !req.user.student) {
+            return res.status(400).json({ error: 'User information is missing' });
+        }
         const studentId = req.user.student.id; 
     
     const comment = await commentService.createCommend(studentId, advisorId, content);
@@ -18,7 +21,9 @@ export const createCommend = async (req:Request, res:Response) =>{
 export const studentReply = async (req: Request, res: Response) => {
     try {
       const { commentId, content } = req.body;
-      const studentId = req.user.student.id;
+      if (!req.user || !req.user.student) {
+        return res.status(400).json({ error: 'User information is missing' });
+      }
       
       const reply = await commentService.replytoComment(commentId, content, true);
       res.status(201).json(reply);
@@ -31,7 +36,9 @@ export const studentReply = async (req: Request, res: Response) => {
 export const advisorReply = async (req: Request, res: Response) => {
     try {
       const { commentId, content } = req.body;
-      const advisorId = req.user.advisor.id;
+      if (!req.user || !req.user.advisor) {
+        return res.status(400).json({ error: 'User information is missing' });
+      }
       
       const reply = await commentService.replytoComment(commentId, content, false);
       res.status(201).json(reply);
@@ -43,7 +50,10 @@ export const advisorReply = async (req: Request, res: Response) => {
 // ดึงการตอบกลับของนักศึกษาทั้งหมด
 export const getStudentConversations = async (req: Request, res: Response) => {
     try {
-      const studentId = req.user.student.id;
+      const studentId = req.user?.student?.id;
+      if (!studentId) {
+        return res.status(400).json({ error: 'User information is missing' });
+      }
       const comments = await commentService.getStudentComments(studentId);
       res.json(comments);
     } catch (error) {
@@ -54,7 +64,10 @@ export const getStudentConversations = async (req: Request, res: Response) => {
 // ดึงตอบกลับของอาจารย์ทั้งหมด
 export const getAdvisorConversations = async (req: Request, res: Response) => {
     try {
-      const advisorId = req.user.advisor.id;
+      const advisorId = req.user?.advisor?.id;
+      if (!advisorId) {
+        return res.status(400).json({ error: 'User information is missing' });
+      }
       const comments = await commentService.getAdvisorComment(advisorId);
       res.json(comments);
     } catch (error) {
@@ -66,7 +79,10 @@ export const getAdvisorConversations = async (req: Request, res: Response) => {
 export const getConversation = async (req: Request, res: Response) => {
     try {
       const studentId = parseInt(req.params.studentId);
-      const advisorId = req.user.advisor.id;
+      const advisorId = req.user?.advisor?.id;
+      if (!advisorId) {
+        return res.status(400).json({ error: 'User information is missing' });
+      }
       
       const conversation = await commentService.getConversation(studentId, advisorId);
       res.json(conversation);
