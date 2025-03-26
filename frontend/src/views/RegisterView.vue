@@ -17,8 +17,8 @@
         </div>
 
         <div class="form-group">
-          <label for="studentId" class="form-label">Student ID</label>
-          <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter student ID"
+          <label for="studentId" class="form-label">Username</label>
+          <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter Username"
             required />
         </div>
 
@@ -112,12 +112,12 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .register-page {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -164,6 +164,7 @@ export default {
 .form-control {
   width: 100%;
   padding: 10px;
+  color: #555;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;

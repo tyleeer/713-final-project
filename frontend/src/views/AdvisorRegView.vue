@@ -1,7 +1,7 @@
 <template>
   <div class="register-page">
     <div class="register-card">
-      <h1 class="register-title">Academic Advisor Registration</h1>
+      <h1 class="register-title">Advisor Registration</h1>
       <form @submit.prevent="registerAdvisor" class="register-form">
         <div class="form-row">
           <div class="form-group">
@@ -15,8 +15,14 @@
         </div>
 
         <div class="form-group">
+          <label for="studentId" class="form-label">Username</label> <!-- username = StudentId -->
+          <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter username"
+            required />
+        </div>
+
+        <div class="form-group">
           <label for="academicPosition" class="form-label">Academic Position</label>
-          <select v-model="academicPosition" class="form-control" id="academicPosition" required>
+          <select v-model="academicPosition" class="form-control" id="department" required>
             <option value="">Select Academic Position</option>
             <option value="Lecturer">Lecturer</option>
             <option value="Assistant Professor">Assistant Professor</option>
@@ -64,9 +70,10 @@ import { http } from '@/utils';
 export default {
   data() {
     return {
+      studentId: '',
       firstName: '',
       lastName: '',
-      academicPosition: '',
+      department: '',
       profilePic: null,
       password: '',
       confirmPassword: '',
@@ -87,13 +94,13 @@ export default {
       }
 
       const formData = new FormData();
+      formData.append('studentId', this.studentId);
       formData.append('firstName', this.firstName);
       formData.append('lastName', this.lastName);
-      formData.append('academicPosition', this.academicPosition);
-      formData.append('role', this.role);
+      formData.append('department', this.department);
+      formData.append('role', this.role);  // ส่ง role ไปด้วย
       formData.append('profilePic', this.profilePic);
       formData.append('password', this.password);
-
       try {
         const response = await http.postForm('auth/register-advisor', formData);
         if (response.status === 201) {
@@ -108,37 +115,39 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .register-page {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
   margin: 0;
-  padding: 20px;
-  background-color: #f4f6f9;
+  padding: 0;
+  overflow: scroll;
+
 }
 
 .register-card {
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 30px;
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .register-title {
   text-align: center;
-  color: #2c3e50;
+  color: #333;
   margin-bottom: 25px;
   font-size: 1.8rem;
-  font-weight: 600;
 }
 
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .form-row {
@@ -148,99 +157,68 @@ export default {
 
 .form-group {
   flex: 1;
+
 }
 
 .form-label {
   display: block;
-  margin-bottom: 8px;
-  color: #34495e;
-  font-size: 0.95rem;
-  font-weight: 500;
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 0.9rem;
 }
 
 .form-control {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #bdc3c7;
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #2c3e50;
-  transition: border-color 0.3s ease;
+  padding: 10px;
+  color: #555;
+  border: 1px solid #646464;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
 
 .form-control:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.file-input-wrapper {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-
-.file-input {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-}
-
-.file-input-label {
-  display: inline-block;
-  padding: 12px 20px;
-  background-color: #ecf0f1;
-  color: #2c3e50;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.file-input-label:hover {
-  background-color: #dfe4e6;
-}
-
-.file-name {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  color: #7f8c8d;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
 .btn-register {
-  background-color: #3498db;
+  background-color: #4a90e2;
   color: white;
   border: none;
-  padding: 14px;
-  border-radius: 6px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 1rem;
   cursor: pointer;
+  margin-top: 10px;
   transition: background-color 0.3s ease;
 }
 
 .btn-register:hover {
-  background-color: #2980b9;
+  background-color: #357abd;
 }
 
 .error-message {
-  color: #e74c3c;
+  color: #d9534f;
   text-align: center;
-  margin-top: 15px;
-  font-size: 0.95rem;
+  margin-top: 10px;
+  font-size: 0.9rem;
 }
 
-@media (max-width: 600px) {
+
+.file-name {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+@media (max-width: 480px) {
   .form-row {
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
   }
 
   .register-card {
-    width: 100%;
+    width: 90%;
     padding: 20px;
   }
 }

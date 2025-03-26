@@ -8,10 +8,13 @@
       </RouterLink>
       <nav class="nav-links">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
-        <RouterLink to="/advisorReg" class="nav-link">+ Advisor</RouterLink>
         <RouterLink to="/announcement" class="nav-link" v-if="isAuthenticated">Announcement</RouterLink>
+        <RouterLink to="/StudentList" class="nav-link" v-if="isAuthenticated">Student List</RouterLink>
+
         <RouterLink to="/login" class="nav-link" v-if="!isAuthenticated">Login</RouterLink>
         <RouterLink to="/register" class="nav-link" v-if="!isAuthenticated">Register</RouterLink>
+        <RouterLink to="/advisorReg" class="nav-link" v-if="!isAuthenticated">Add Advisor</RouterLink>
+        <RouterLink to="/reset-password" class="nav-link" v-if="!isAuthenticated">Reset password</RouterLink>
         <a href="#" class="nav-link" v-if="isAuthenticated" @click.prevent="logout">Logout</a>
       </nav>
     </div>

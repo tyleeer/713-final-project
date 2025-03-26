@@ -5,7 +5,7 @@
       <form @submit.prevent="resetPassword">
         <!-- Student ID -->
         <div class="form-group">
-          <label for="studentId" class="form-label">Student ID</label>
+          <label for="studentId" class="form-label">Username</label>
           <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter your student ID"
             required />
         </div>
@@ -105,6 +105,7 @@ export default {
 /* สไตล์สำหรับฟอร์ม */
 .form-group {
   margin-bottom: 20px;
+  text-align: left;
 }
 
 .form-label {
@@ -119,6 +120,7 @@ export default {
   border: 1px solid #3F72AF;
   width: 100%;
   font-size: 1rem;
+
 }
 
 .form-control:focus {
