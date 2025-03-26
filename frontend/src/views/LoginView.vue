@@ -34,27 +34,25 @@ export default {
     };
   },
   methods: {
-  async loginUser() {
-    try {
-      const response = await http.post('auth/login', {
-        email: this.email,
-        password: this.password,
-        role: this.role,
-      });
+    async loginUser() {
+      try {
+        const response = await http.post('auth/login', {
+          email: this.email,
+          password: this.password,
+          role: this.role,
+        });
 
 
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role);
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('role', response.data.role);
 
-
-
-
-      this.$router.push('/announcement'); // Properly navigate using Vue Router
-    } catch (error) {
-      this.errorMessage = error.response.data.message || 'Invalid credentials';
-    }
+        // this.$router.push('/announcement'); // Properly navigate using Vue Router
+        window.location.href = '/announcement'; // Redirect to Announcement page using JavaScript
+      } catch (error) {
+        this.errorMessage = error.response.data.message || 'Invalid credentials';
+      }
+    },
   },
-},
 };
 
 

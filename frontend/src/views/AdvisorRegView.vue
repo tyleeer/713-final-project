@@ -6,11 +6,13 @@
         <div class="form-row">
           <div class="form-group">
             <label for="firstName" class="form-label">First Name</label>
-            <input v-model="firstName" type="text" class="form-control" id="firstName" placeholder="Enter first name" required />
+            <input v-model="firstName" type="text" class="form-control" id="firstName" placeholder="Enter first name"
+              required />
           </div>
           <div class="form-group">
             <label for="lastName" class="form-label">Last Name</label>
-            <input v-model="lastName" type="text" class="form-control" id="lastName" placeholder="Enter last name" required />
+            <input v-model="lastName" type="text" class="form-control" id="lastName" placeholder="Enter last name"
+              required />
           </div>
         </div>
 
@@ -22,7 +24,7 @@
 
         <div class="form-group">
           <label for="academicPosition" class="form-label">Academic Position</label>
-          <select v-model="academicPosition" class="form-control" id="department" required>
+          <select v-model="department" class="form-control" id="department" required>
             <option value="">Select Academic Position</option>
             <option value="Lecturer">Lecturer</option>
             <option value="Assistant Professor">Assistant Professor</option>
@@ -33,7 +35,7 @@
 
         <div class="form-group">
           <label for="role" class="form-label">Role</label>
-          <input v-model="role" type="text" class="form-control" id="role" value="Adviser" readonly />
+          <input v-model="role" type="text" class="form-control" id="role" value="Advisor" readonly />
         </div>
 
         <div class="form-group">
@@ -48,11 +50,13 @@
         <div class="form-row">
           <div class="form-group">
             <label for="password" class="form-label">Password</label>
-            <input v-model="password" type="password" class="form-control" id="password" placeholder="Enter password" required />
+            <input v-model="password" type="password" class="form-control" id="password" placeholder="Enter password"
+              required />
           </div>
           <div class="form-group">
             <label for="confirmPassword" class="form-label">Confirm Password</label>
-            <input v-model="confirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" required />
+            <input v-model="confirmPassword" type="password" class="form-control" id="confirmPassword"
+              placeholder="Confirm password" required />
           </div>
         </div>
 
