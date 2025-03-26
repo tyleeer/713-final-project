@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
-import { registerUser, loginUser, resetPassword } from '../services/authService';
+import { registerUser, registerAdvisor, loginUser, resetPassword } from '../services/authService';
+import { authenticateJWT, authorizeRole } from '../middleware/authMiddleware'
 import { uploadFile } from '../services/uploadFileService'
 import prisma from '../prismaClient';
 import multer from 'multer';
@@ -55,8 +56,8 @@ router.post('/register', upload.single('profilePic'), async (req: Request, res: 
 router.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const token = await loginUser(email, password);
-    res.json({ message: 'Login successful', token });
+    const { token, role } = await loginUser(email, password);
+    res.json({ message: 'Login successful', token, role });
   } catch (error: any) {
     res.status(401).json({ message: error?.message });
   }
@@ -70,6 +71,48 @@ router.post('/reset-password', async (req: Request, res: Response) => {
   try {
     await resetPassword(email, oldPassword, newPassword);
     res.json({ message: 'Password reset successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: error?.message });
+  }
+});
+
+router.post('/register-advisor', authenticateJWT, authorizeRole(['admin']), upload.single('profilePic'), async (req: Request, res: Response) => {
+
+  const { password, studentId, firstName, lastName, department, role } = req.body;
+
+  try {
+
+    const file = req.file;
+    if (!file) {
+      throw new Error('Please file uploaded.');
+    }
+
+    const filePath = "profile";
+
+    if (!bucket || !filePath) {
+      return res.status(500).json({ message: 'Bucket name or file path not configured.' });
+    }
+
+    if (firstName === '' || lastName === '' || department === '' || studentId === '' || password === '' || role === '') {
+      throw new Error('Please fill in all fields');
+    }
+    const { user, profile } = await registerAdvisor(studentId, password, firstName, lastName, department, role);
+
+    const ouputUrl = await uploadFile(bucket, filePath, file);
+
+    if (ouputUrl) {
+      await prisma.profile.update({
+        where: { id: profile.id },
+        data: {
+          profilePic: ouputUrl
+        }
+      });
+    }
+
+    user.password = '';
+
+    res.status(201).json({ message: 'Advisor registered successfully', user, profile });
+
   } catch (error: any) {
     res.status(500).json({ message: error?.message });
   }

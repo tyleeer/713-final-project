@@ -1,8 +1,8 @@
 <template>
   <div class="register-page">
     <div class="register-card">
-      <h1 class="register-title">Student Registration</h1>
-      <form @submit.prevent="registerUser" class="register-form">
+      <h1 class="register-title">Advisor Registration</h1>
+      <form @submit.prevent="registerAdvisor" class="register-form">
         <div class="form-row">
           <div class="form-group">
             <label for="firstName" class="form-label">First Name</label>
@@ -17,25 +17,33 @@
         </div>
 
         <div class="form-group">
-          <label for="studentId" class="form-label">Username</label>
-          <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter Username"
+          <label for="studentId" class="form-label">Username</label> <!-- username = StudentId -->
+          <input v-model="studentId" type="text" class="form-control" id="studentId" placeholder="Enter username"
             required />
         </div>
 
         <div class="form-group">
-          <label for="department" class="form-label">Department</label>
-          <input v-model="department" type="text" class="form-control" id="department" placeholder="Enter department"
-            required />
+          <label for="academicPosition" class="form-label">Academic Position</label>
+          <select v-model="department" class="form-control" id="department" required>
+            <option value="">Select Academic Position</option>
+            <option value="Lecturer">Lecturer</option>
+            <option value="Assistant Professor">Assistant Professor</option>
+            <option value="Associate Professor">Associate Professor</option>
+            <option value="Professor">Professor</option>
+          </select>
         </div>
 
         <div class="form-group">
           <label for="role" class="form-label">Role</label>
-          <input v-model="role" type="text" class="form-control" id="role" placeholder="Enter role" value="student" readonly />
+          <input v-model="role" type="text" class="form-control" id="role" value="Advisor" readonly />
         </div>
 
         <div class="form-group">
           <label for="profilePic" class="form-label">Profile Picture</label>
-          <input type="file" class="form-control file-input" id="profilePic" @change="onFileChange" required />
+          <div class="file-input-wrapper">
+            <input type="file" class="file-input" id="profilePic" @change="onFileChange" required />
+            <span class="file-input-label">Choose File</span>
+          </div>
           <p v-if="fileName" class="file-name">{{ fileName }}</p>
         </div>
 
@@ -52,7 +60,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn-register">Register</button>
+        <button type="submit" class="btn-register">Register Advisor</button>
 
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
       </form>
@@ -73,7 +81,7 @@ export default {
       profilePic: null,
       password: '',
       confirmPassword: '',
-      role: 'student',  // กำหนด role เป็น 'student' โดยอัตโนมัติ
+      role: 'Adviser',
       errorMessage: '',
       fileName: '',
     };
@@ -83,7 +91,7 @@ export default {
       this.profilePic = event.target.files[0];
       this.fileName = this.profilePic.name;
     },
-    async registerUser() {
+    async registerAdvisor() {
       if (this.password !== this.confirmPassword) {
         this.errorMessage = 'Passwords do not match';
         return;
@@ -97,20 +105,20 @@ export default {
       formData.append('role', this.role);  // ส่ง role ไปด้วย
       formData.append('profilePic', this.profilePic);
       formData.append('password', this.password);
-
       try {
-        const response = await http.postForm('auth/register', formData);
+        const response = await http.postForm('auth/register-advisor', formData);
         if (response.status === 201) {
-          this.errorMessage = 'User registered successfully';
+          this.errorMessage = 'Advisor registered successfully';
           this.$router.push('/login');
         }
       } catch (error) {
-        this.errorMessage = error.response.data.message || 'Error registering user';
+        this.errorMessage = error.response.data.message || 'Error registering advisor';
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 .register-page {
@@ -120,7 +128,8 @@ export default {
   height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: scroll;
+
 }
 
 .register-card {
@@ -152,6 +161,7 @@ export default {
 
 .form-group {
   flex: 1;
+
 }
 
 .form-label {
@@ -165,7 +175,7 @@ export default {
   width: 100%;
   padding: 10px;
   color: #555;
-  border: 1px solid #ddd;
+  border: 1px solid #646464;
   border-radius: 4px;
   font-size: 0.9rem;
 }

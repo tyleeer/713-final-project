@@ -9,7 +9,7 @@ async function createRoles(prisma: PrismaClient): Promise<void> {
         await prisma.role.upsert({
             where: { name: role },
             update: {},
-            create: { name: role }
+            create: { name: role, users: '' }
         });
     }
 

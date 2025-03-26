@@ -1,24 +1,41 @@
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import { NextFunction, Response } from "express";
 
-const JWT_SECRET = process.env.JWT_SECRET!; // นำค่าจาก .env มาใช้
+const JWT_SECRET = process.env.JWT_SECRET!;
 
 // JWT Authentication Middleware
 export const authenticateJWT = (req: any, res: any, next: any) => {
-  // ดึง token จาก header
-  const token = req.headers['authorization']?.split(' ')[1]; // ตัวอย่างการแยก token จาก "Bearer <token>"
+  const token = req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
-    return res.status(403).send('Access denied. No token provided.');
+    return res.status(403).json({ message: 'No token provided.' });
   }
 
-  // ตรวจสอบความถูกต้องของ token โดยใช้ jwt.verify
   jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors | null, user: any) => {
     if (err) {
-      return res.status(403).send('Invalid token.');
+      return res.status(403).json({ message: 'Failed to authenticate token.' });
     }
 
-    // หาก token ถูกต้อง ให้เก็บข้อมูลของผู้ใช้ใน req.user
-    req.user = user;
-    next(); // ให้ request ไปยัง middleware ถัดไป
+    // ตรวจสอบว่า token มี role หรือไม่
+    if (!user.role) {
+      return res.status(403).json({ message: 'Role not found in token' });
+    }
+
+    req.user = user; // เก็บ user + role ไว้ใน req
+    next();
   });
+};
+
+// Role Authorization Middleware
+export const authorizeRole = (role: string[]) => {
+  return (req: any, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      return res.status(403).json({ message: 'User not authenticated' });
+    }
+
+    if (!role.find(r => r.toLowerCase().includes(req.user.role?.toLowerCase()))) {
+      return res.status(403).json({ message: 'forbidden' });
+    }
+    next();
+  };
 };

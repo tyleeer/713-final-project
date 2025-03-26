@@ -4,8 +4,8 @@
       <h1 class="login-title">กรุณาเข้าสู่ระบบ</h1>
       <form @submit.prevent="loginUser">
         <div class="form-group">
-          <label for="email" class="form-label">StudentID</label>
-          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your StudentID"
+          <label for="email" class="form-label">Username</label>
+          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your username"
             required />
         </div>
         <div class="form-group">
@@ -39,16 +39,23 @@ export default {
         const response = await http.post('auth/login', {
           email: this.email,
           password: this.password,
+          role: this.role,
         });
-        localStorage.setItem('token', response.data.token); // Save token to localStorage
-        // this.$router.push('/home'); // Redirect to home page after successful login
-        window.location.href = '/';
+
+
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('role', response.data.role);
+
+        // this.$router.push('/announcement'); // Properly navigate using Vue Router
+        window.location.href = '/announcement'; // Redirect to Announcement page using JavaScript
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Invalid credentials';
       }
     },
   },
 };
+
+
 </script>
 
 <style scoped>
@@ -58,7 +65,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #F9F7F7;
   padding: 20px;
 }
 
@@ -67,7 +73,6 @@ export default {
 }
 
 .login-container {
-  background-color: #F9F7F7;
   display: flex;
   justify-content: center;
   align-items: center;

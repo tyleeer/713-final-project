@@ -10,7 +10,7 @@ export function getAdvisor() {
                 include: {
                     user: {
                         include: {
-                            role: true
+                            // role: true
                         },
                     },
                 },
@@ -19,8 +19,3 @@ export function getAdvisor() {
         },
     });
 }
-
-
-
-
-
