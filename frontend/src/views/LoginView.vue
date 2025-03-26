@@ -4,8 +4,8 @@
       <h1 class="login-title">กรุณาเข้าสู่ระบบ</h1>
       <form @submit.prevent="loginUser">
         <div class="form-group">
-          <label for="email" class="form-label">StudentID</label>
-          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your StudentID"
+          <label for="email" class="form-label">Username</label>
+          <input v-model="email" type="username" class="form-control" id="email" placeholder="Enter your username"
             required />
         </div>
         <div class="form-group">
@@ -34,21 +34,30 @@ export default {
     };
   },
   methods: {
-    async loginUser() {
-      try {
-        const response = await http.post('auth/login', {
-          email: this.email,
-          password: this.password,
-        });
-        localStorage.setItem('token', response.data.token); // Save token to localStorage
-        // this.$router.push('/home'); // Redirect to home page after successful login
-        window.location.href = '/';
-      } catch (error) {
-        this.errorMessage = error.response.data.message || 'Invalid credentials';
-      }
-    },
+  async loginUser() {
+    try {
+      const response = await http.post('auth/login', {
+        email: this.email,
+        password: this.password,
+        role: this.role,
+      });
+
+
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('role', response.data.role);
+
+
+
+
+      this.$router.push('/'); // Properly navigate using Vue Router
+    } catch (error) {
+      this.errorMessage = error.response.data.message || 'Invalid credentials';
+    }
   },
+},
 };
+
+
 </script>
 
 <style scoped>
@@ -58,6 +67,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #F9F7F7;
   padding: 20px;
 }
 
@@ -66,11 +76,13 @@ export default {
 }
 
 .login-container {
+  background-color: #F9F7F7;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   margin-top: 50px;
+  height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;

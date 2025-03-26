@@ -1,3 +1,5 @@
+
+
 <template>
   <header class="fixed-navbar">
     <div class="navbar-container">
@@ -6,7 +8,7 @@
       </RouterLink>
       <nav class="nav-links">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
-        <RouterLink to="/announcement" class="nav-link" v-if="isAuthenticated">Announcement</RouterLink>
+        <RouterLink to="/announcement" class="nav-link" v-if="isAuthenticated && userRole === 'student'">Announcement</RouterLink>
         <RouterLink to="/login" class="nav-link" v-if="!isAuthenticated">Login</RouterLink>
         <RouterLink to="/register" class="nav-link" v-if="!isAuthenticated">Register</RouterLink>
         <a href="#" class="nav-link" v-if="isAuthenticated" @click.prevent="logout">Logout</a>
