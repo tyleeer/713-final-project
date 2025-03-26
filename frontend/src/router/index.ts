@@ -4,7 +4,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
+import AdvisorRegView from '../views/AdvisorRegView.vue';
 import ResetPasswordView from '../views/ResetPasswordView.vue';
+import AnnouncementView from '../views/AnnouncementView.vue';
 import ProfileView from '../views/AboutView.vue'; // ตัวอย่างหน้าโปรไฟล์ที่ต้องการการยืนยันตัวตน
 
 
@@ -51,6 +53,11 @@ const router = createRouter({
       path: '/announcement',
       name: 'announcement',
       component: () => import('../views/AnnouncementView.vue'),
+    },
+    {
+      path: '/AdvisorReg',
+      name: 'AdvisorReg',
+      component: () => import('../views/advisorRegView.vue'),
     },
   ],
 });

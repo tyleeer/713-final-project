@@ -49,7 +49,7 @@ export default {
 
 
 
-      this.$router.push('/'); // Properly navigate using Vue Router
+      this.$router.push('/announcement'); // Properly navigate using Vue Router
     } catch (error) {
       this.errorMessage = error.response.data.message || 'Invalid credentials';
     }
