@@ -23,8 +23,14 @@
         </div>
 
         <div class="form-group">
+          <label for="studentId" class="form-label">department</label> <!-- username = StudentId -->
+          <input v-model="studentId" type="text" class="form-control" id="department" placeholder="Enter department"
+            required />
+        </div>
+
+        <div class="form-group">
           <label for="academicPosition" class="form-label">Academic Position</label>
-          <select v-model="department" class="form-control" id="department" required>
+          <select v-model="department" class="form-control" id="position" required>
             <option value="">Select Academic Position</option>
             <option value="Lecturer">Lecturer</option>
             <option value="Assistant Professor">Assistant Professor</option>
@@ -75,6 +81,7 @@ export default {
       studentId: '',
       firstName: '',
       lastName: '',
+      position: '',
       department: '',
       profilePic: null,
       password: '',
@@ -99,6 +106,7 @@ export default {
       formData.append('studentId', this.studentId);
       formData.append('firstName', this.firstName);
       formData.append('lastName', this.lastName);
+      formData.append('position', this.position);
       formData.append('department', this.department);
       formData.append('role', this.role);  // ส่ง role ไปด้วย
       formData.append('profilePic', this.profilePic);
