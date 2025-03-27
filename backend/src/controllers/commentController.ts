@@ -7,11 +7,11 @@ export const createCommend = async (req: Request, res: Response) => {
   try {
     const { advisorId, content } = req.body;
 
-    if (!req.user) {
+    if (!req.body.user) {
       throw new Error('User not authenticated');
     }
 
-    const studentId = req.user.student.id;
+    const studentId = req.body.user.student.id;
 
     const comment = await commentService.createCommend(+studentId, advisorId, content);
 
@@ -27,11 +27,11 @@ export const studentReply = async (req: Request, res: Response) => {
   try {
     const { commentId, content } = req.body;
 
-    if (!req.user) {
+    if (!req.body.user) {
       throw new Error('User not authenticated');
     }
 
-    const studentId = req.user.student.id;
+    const studentId = req.body.user.student.id;
 
     const reply = await commentService.replytoComment(+commentId, content, true);
     res.status(201).json(reply);
@@ -46,11 +46,11 @@ export const advisorReply = async (req: Request, res: Response) => {
   try {
     const { commentId, content } = req.body;
 
-    if (!req.user) {
+    if (!req.body.user) {
       throw new Error('User not authenticated');
     }
 
-    const advisorId = req.user.advisor.id;
+    const advisorId = req.body.user.advisor.id;
 
     const reply = await commentService.replytoComment(commentId, content, false);
     res.status(201).json(reply);
@@ -62,10 +62,10 @@ export const advisorReply = async (req: Request, res: Response) => {
 // ดึงการตอบกลับของนักศึกษาทั้งหมด
 export const getStudentConversations = async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    if (!req.body.user) {
       throw new Error('User not authenticated');
     }
-    const studentId = req.user.student.id;
+    const studentId = req.body.user.student.id;
     const comments = await commentService.getStudentComments(+studentId);
     res.json(comments);
   } catch (error) {
@@ -77,10 +77,10 @@ export const getStudentConversations = async (req: Request, res: Response) => {
 export const getAdvisorConversations = async (req: Request, res: Response) => {
 
   try {
-    if (!req.user) {
+    if (!req.body.user) {
       throw new Error('User not authenticated');
     }
-    const advisorId = req.user.advisor.id;
+    const advisorId = req.body.user.advisor.id;
     const comments = await commentService.getAdvisorComment(+advisorId);
     res.json(comments);
   } catch (error) {
@@ -92,11 +92,11 @@ export const getAdvisorConversations = async (req: Request, res: Response) => {
 export const getConversation = async (req: Request, res: Response) => {
   try {
     const studentId = parseInt(req.params.studentId);
-    if (!req.user) {
+    if (!req.body.user) {
       throw new Error('User not authenticated');
 
     }
-    const advisorId = req.user.advisor.id;
+    const advisorId = req.body.user.advisor.id;
 
     const conversation = await commentService.getConversation(studentId, +advisorId);
     res.json(conversation);

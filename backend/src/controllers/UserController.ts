@@ -5,11 +5,11 @@ import prisma from '../prismaClient';
 // Get User Profile
 export const getProfile = async (req: Request, res: Response) => {
 
-  if (!req.user) {
+  if (!req.body.user) {
     return res.status(400).json({ message: 'User information is missing' });
   }
 
-  const userId = req.user.userId;
+  const userId = req.body.user.userId;
   if (userId === undefined || userId === null || userId === '') {
     return res.status(400).json({ message: 'User information is missing' });
   }
