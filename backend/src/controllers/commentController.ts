@@ -7,14 +7,13 @@ export const createCommend = async (req: Request, res: Response) => {
   try {
     const { advisorId, content } = req.body;
 
-    if (!req.user) {
+    if (!req.user || !req.user.student) {
       throw new Error('User not authenticated');
     }
 
     const studentId = req.user.student.id;
 
     const comment = await commentService.createCommend(+studentId, advisorId, content);
-
     res.status(201).json(comment);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create comment' });
@@ -27,7 +26,7 @@ export const studentReply = async (req: Request, res: Response) => {
   try {
     const { commentId, content } = req.body;
 
-    if (!req.user) {
+    if (!req.user || !req.user.student) {
       throw new Error('User not authenticated');
     }
 
@@ -46,7 +45,7 @@ export const advisorReply = async (req: Request, res: Response) => {
   try {
     const { commentId, content } = req.body;
 
-    if (!req.user) {
+    if (!req.user || !req.user.advisor) {
       throw new Error('User not authenticated');
     }
 
@@ -62,7 +61,7 @@ export const advisorReply = async (req: Request, res: Response) => {
 // ดึงการตอบกลับของนักศึกษาทั้งหมด
 export const getStudentConversations = async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
+    if (!req.user || !req.user.student) {
       throw new Error('User not authenticated');
     }
     const studentId = req.user.student.id;
@@ -77,7 +76,7 @@ export const getStudentConversations = async (req: Request, res: Response) => {
 export const getAdvisorConversations = async (req: Request, res: Response) => {
 
   try {
-    if (!req.user) {
+    if (!req.user || !req.user.advisor) {
       throw new Error('User not authenticated');
     }
     const advisorId = req.user.advisor.id;
@@ -92,7 +91,7 @@ export const getAdvisorConversations = async (req: Request, res: Response) => {
 export const getConversation = async (req: Request, res: Response) => {
   try {
     const studentId = parseInt(req.params.studentId);
-    if (!req.user) {
+    if (!req.user || !req.user.advisor) {
       throw new Error('User not authenticated');
 
     }
