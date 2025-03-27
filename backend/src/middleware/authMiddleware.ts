@@ -21,7 +21,7 @@ export const authenticateJWT = (req: any, res: any, next: any) => {
       return res.status(403).json({ message: 'Role not found in token' });
     }
 
-    req.body.user = user; // เก็บ user + role ไว้ใน req
+    req.user = user; // เก็บ user + role ไว้ใน req
     next();
   });
 };
@@ -29,11 +29,11 @@ export const authenticateJWT = (req: any, res: any, next: any) => {
 // Role Authorization Middleware
 export const authorizeRole = (role: string[]) => {
   return (req: any, res: Response, next: NextFunction) => {
-    if (!req.body.user) {
+    if (!req.user) {
       return res.status(403).json({ message: 'User not authenticated' });
     }
 
-    if (!role.find(r => r.toLowerCase().includes(req.body.user.role?.toLowerCase()))) {
+    if (!role.find(r => r.toLowerCase().includes(req.user.role?.toLowerCase()))) {
       return res.status(403).json({ message: 'forbidden' });
     }
     next();
