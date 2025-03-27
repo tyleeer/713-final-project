@@ -66,12 +66,16 @@ export const registerUser = async (
   return { user, profile, student };
 };
 
+
+//advisor
+
 export const registerAdvisor = async (
   studentId: string,
   password: string,
   firstName: string,
   lastName: string,
   department: string,
+  position: string,
   role: string,
 ) => {
 
@@ -103,6 +107,7 @@ export const registerAdvisor = async (
     data: {
       firstName,
       lastName,
+      position,
       department,
       userId: user.id,
     }

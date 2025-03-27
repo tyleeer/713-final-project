@@ -23,14 +23,15 @@
         </div>
 
         <div class="form-group">
-          <label for="studentId" class="form-label">department</label> <!-- username = StudentId -->
-          <input v-model="studentId" type="text" class="form-control" id="department" placeholder="Enter department"
+          <label for="department" class="form-label">Department</label>
+          <input v-model="department" type="text" class="form-control" id="department" placeholder="Enter department"
             required />
         </div>
 
+
         <div class="form-group">
-          <label for="academicPosition" class="form-label">Academic Position</label>
-          <select v-model="department" class="form-control" id="position" required>
+          <label for="position" class="form-label">Academic Position</label>
+          <select v-model="position" class="form-control" id="position" required>
             <option value="">Select Academic Position</option>
             <option value="Lecturer">Lecturer</option>
             <option value="Assistant Professor">Assistant Professor</option>
@@ -81,8 +82,8 @@ export default {
       studentId: '',
       firstName: '',
       lastName: '',
-      position: '',
       department: '',
+      position: '',
       profilePic: null,
       password: '',
       confirmPassword: '',
@@ -106,11 +107,12 @@ export default {
       formData.append('studentId', this.studentId);
       formData.append('firstName', this.firstName);
       formData.append('lastName', this.lastName);
-      formData.append('position', this.position);
       formData.append('department', this.department);
+      formData.append('position', this.position);
       formData.append('role', this.role);  // ส่ง role ไปด้วย
       formData.append('profilePic', this.profilePic);
       formData.append('password', this.password);
+
       try {
         const response = await http.postForm('auth/register-advisor', formData);
         if (response.status === 201) {

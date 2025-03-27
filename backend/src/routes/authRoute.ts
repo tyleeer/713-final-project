@@ -76,9 +76,11 @@ router.post('/reset-password', async (req: Request, res: Response) => {
   }
 });
 
+
+// advisor register
 router.post('/register-advisor', authenticateJWT, authorizeRole(['admin']), upload.single('profilePic'), async (req: Request, res: Response) => {
 
-  const { password, studentId, firstName, lastName, department, role } = req.body;
+  const { password, studentId, firstName, lastName, department, role, position} = req.body;
 
   try {
 
@@ -93,10 +95,11 @@ router.post('/register-advisor', authenticateJWT, authorizeRole(['admin']), uplo
       return res.status(500).json({ message: 'Bucket name or file path not configured.' });
     }
 
+    
     if (firstName === '' || lastName === '' || department === '' || studentId === '' || password === '' || role === '') {
       throw new Error('Please fill in all fields');
     }
-    const { user, profile } = await registerAdvisor(studentId, password, firstName, lastName, department, role);
+    const { user, profile } = await registerAdvisor(studentId, password, firstName, lastName, department, position, role);
 
     const ouputUrl = await uploadFile(bucket, filePath, file);
 

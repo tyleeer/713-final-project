@@ -20,7 +20,7 @@ model Profile {
   firstName  String
   lastName   String
   department String
-  position   String
+  position   String   @default("student")
   profilePic String?
   userId     Int      @unique
   user       User     @relation(fields: [userId], references: [id])
