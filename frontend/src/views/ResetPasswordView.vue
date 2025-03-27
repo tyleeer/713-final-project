@@ -123,6 +123,10 @@ export default {
 
 }
 
+input.form-control {
+  color: #202020;
+}
+
 .form-control:focus {
   border-color: #112D4E;
   /* สีของกรอบเมื่อมีการคลิก */
