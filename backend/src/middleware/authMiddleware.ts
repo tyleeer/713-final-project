@@ -3,6 +3,16 @@ import { NextFunction, Response } from "express";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        userId: string;
+      }
+    }
+  }
+}
+
 // JWT Authentication Middleware
 export const authenticateJWT = (req: any, res: any, next: any) => {
   const token = req.headers['authorization']?.split(' ')[1];
