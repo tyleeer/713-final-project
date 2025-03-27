@@ -91,7 +91,7 @@ export default {
 <template>
   <div class="container pt-4">
     <h1 class="text-primary text-center text-3xl">Admin Dashboard</h1>
-    <div class="flex justify-between items-center">
+    <div class="flex flex-col md:flex-row gap-2 justify-between items-center">
       <h2 class="title text-black flex gap-2 items-center text-3xl mb-0!">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-people-fill"
           viewBox="0 0 16 16">

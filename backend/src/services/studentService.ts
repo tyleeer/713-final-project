@@ -12,7 +12,7 @@ export const getStudent = async (query = '') => {
       OR: [
         { profile: { firstName: { contains: query } } },
         { profile: { lastName: { contains: query } } },
-        { profile: { department: { contains: query } } },
+        { username: { contains: query } }
       ],
       AND: {
         role: 'Student'
