@@ -46,8 +46,7 @@ export default {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('role', response.data.role);
 
-        // this.$router.push('/announcement'); // Properly navigate using Vue Router
-        window.location.href = '/announcement'; // Redirect to Announcement page using JavaScript
+        window.location.href = '/'; // Redirect to Announcement page using JavaScript
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Invalid credentials';
       }
