@@ -4,9 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
-import AdvisorRegView from '../views/AdvisorRegView.vue';
 import ResetPasswordView from '../views/ResetPasswordView.vue';
-import AnnouncementView from '../views/AnnouncementView.vue';
 import ProfileView from '../views/AboutView.vue'; // ตัวอย่างหน้าโปรไฟล์ที่ต้องการการยืนยันตัวตน
 import AdvisorChat from '../views/AdvisorChat.vue';
 import StudentChat from '../views/StudentChat.vue';
@@ -52,12 +50,6 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-
-      path: '/announcement',
-      name: 'announcement',
-      component: () => import('../views/AnnouncementView.vue'),
-    },
-    {
       path: '/AdvisorReg',
       name: 'AdvisorReg',
       component: () => import('../views/advisorRegView.vue'),
@@ -67,14 +59,20 @@ const router = createRouter({
       name: 'StudentList',
       component: () => import('../views/StudentList.vue'),
     },
+    {
+      path: '/create-announcement',
+      name: 'create-announcement',
+      component: () => import('../views/CreateAnnouncementView.vue'),
+    },
   ],
 });
 
 // ใช้ beforeEach ในการตรวจสอบการเข้าสู่ระบบ (Authentication)
 router.beforeEach((to, _, next) => {
+  document.documentElement.setAttribute('data-theme', 'light')
   const token = localStorage.getItem('token'); // ตรวจสอบว่า token อยู่ใน localStorage หรือไม่
   // ถ้าผู้ใช้ต้องการเข้าถึงหน้าโปรไฟล์หรือหน้าอื่น ๆ ที่ต้องการการยืนยันตัวตน
-  if (to.name === 'profile' && !token) {
+  if ((to.name === 'profile' || to.name === 'home') && !token) {
     // ถ้าไม่มี token, รีไดเรคไปที่หน้า login
     next({ name: 'login' });
   } else {
