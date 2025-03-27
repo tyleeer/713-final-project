@@ -40,10 +40,8 @@
 
         <div class="form-group">
           <label for="profilePic" class="form-label">Profile Picture</label>
-          <div class="file-input-wrapper">
-            <input type="file" class="file-input" id="profilePic" @change="onFileChange" required />
-            <span class="file-input-label">Choose File</span>
-          </div>
+          <input type="file" class="form-control file-input" id="profilePic" @change="onFileChange" accept="image/*"
+            required />
           <p v-if="fileName" class="file-name">{{ fileName }}</p>
         </div>
 
@@ -122,14 +120,7 @@ export default {
 
 <style scoped>
 .register-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
   overflow: scroll;
-
 }
 
 .register-card {
@@ -213,6 +204,12 @@ export default {
 .file-name {
   font-size: 0.9rem;
   color: #333;
+}
+
+.file-input {
+  background-color: white;
+  height: 60px;
+  --btn-color: lightgray;
 }
 
 @media (max-width: 480px) {

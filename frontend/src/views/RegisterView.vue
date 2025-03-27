@@ -30,12 +30,14 @@
 
         <div class="form-group">
           <label for="role" class="form-label">Role</label>
-          <input v-model="role" type="text" class="form-control" id="role" placeholder="Enter role" value="student" readonly />
+          <input v-model="role" type="text" class="form-control" id="role" placeholder="Enter role" value="student"
+            readonly />
         </div>
 
         <div class="form-group">
           <label for="profilePic" class="form-label">Profile Picture</label>
-          <input type="file" class="form-control file-input" id="profilePic" @change="onFileChange" required />
+          <input type="file" class="form-control file-input" id="profilePic" @change="onFileChange" accept="image/*"
+            required />
           <p v-if="fileName" class="file-name">{{ fileName }}</p>
         </div>
 
@@ -114,13 +116,7 @@ export default {
 
 <style scoped>
 .register-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .register-card {
@@ -203,6 +199,12 @@ export default {
 .file-name {
   font-size: 0.9rem;
   color: #333;
+}
+
+.file-input {
+  background-color: white;
+  height: 60px;
+  --btn-color: lightgray;
 }
 
 @media (max-width: 480px) {

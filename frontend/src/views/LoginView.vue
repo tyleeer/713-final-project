@@ -16,7 +16,7 @@
         <button type="submit" class="btn btn-primary">Login</button>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <div class="reset-password">
-          <router-link to="/reset-password">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
+          <router-link to="/reset-password" class="text-primary!">Forgot Password?</router-link> <!-- ลิงก์ไปยังหน้า Forgot Password -->
         </div>
       </form>
     </div>
@@ -68,18 +68,18 @@ export default {
 }
 
 .reset-password {
+  margin-top: 0.5rem;
   text-align: right;
 }
 
 .login-container {
+  margin: auto 0;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin-top: 50px;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
+  height: 100%;
+  width: 100%;
   padding: 0;
 }
 
@@ -143,6 +143,7 @@ export default {
 }
 
 .form-control {
+  color: #202020;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #3F72AF;
