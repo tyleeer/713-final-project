@@ -1,8 +1,12 @@
 import prisma from "../prismaClient";
-import * as repo from "../repo/StudentPepo";
+import * as repo from "../repo/StudentRepo";
 
 export function getAdvisor() {
   return repo.getAdvisor();
+}
+
+export function getStudentByUserId(userId: number) {
+  return repo.getStudentByUserId(userId);
 }
 
 export const getStudent = async (query = '') => {

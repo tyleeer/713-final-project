@@ -13,3 +13,46 @@ export function getAnnouncements() {
         }
     });
 }
+
+export function getAnnouncementsByStudent(studentId: number, advisorId: number) {
+    return prisma.announcement.findMany({
+        where: {
+            AND: [
+                { advisorId: advisorId },
+                {
+                    advisor: {
+                        profile: {
+                            Advisor: {
+                                students: {
+                                    some: {
+                                        id: studentId
+                                    },
+                                },
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        include: {
+            advisor: {
+                include: {
+                    profile: true
+                }
+            }
+        }
+    });
+}
+
+export function getAnnouncementsByAdvisor(advisorId: number) {
+    return prisma.announcement.findMany({
+        where: { advisorId: advisorId },
+        include: {
+            advisor: {
+                include: {
+                    profile: true
+                }
+            }
+        }
+    });
+}
