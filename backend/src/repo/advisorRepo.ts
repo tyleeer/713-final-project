@@ -47,9 +47,9 @@ export function createReply(newReply: Reply) {
     });
 }
 
-export function checkAdvisor(advisorId: number) {
-    return prisma.advisor.findUnique({
-        where: { id: advisorId }
+export function checkAdvisor(userId: number) {
+    return prisma.advisor.findFirstOrThrow({
+        where: { profile: { userId } }
     });
 }
 

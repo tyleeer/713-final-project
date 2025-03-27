@@ -1,10 +1,10 @@
 import multer from 'multer';
 import { uploadFile } from '../services/uploadFileService';
+import { authenticateJWT, authorizeRole } from '../middleware/authMiddleware';
 import { checkAdvisor, checkStudent, createAnnouncement, createComment, checkComment, createReply } from '../services/advisorService';
 import { getConversation } from '../services/commentService';
 import express, { Request, Response } from 'express';
 import { Announcement, Comment, Reply } from '../models/types';
-// import { authenticateJWT } from '../middleware/authMiddleware';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -85,24 +85,24 @@ router.post('/reply', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/announcement', upload.single('file'), async (req: Request, res: Response) => {
+router.post('/announcement', authenticateJWT, authorizeRole(['advisor']), upload.single('file'), async (req: Request, res: Response) => {
   try {
     const file = req.file;
-    // console.log(req.body);
+    console.log(req.body);
     const { topic, content } = req.body;
-    const advisorId = req.body.advisorId ? parseInt(req.body.advisorId) : null;
+    const userId = req.user?.userId ? parseInt(req.user.userId) : null;
 
     if (!file || !topic || !content) return res.status(400).send({ error: 'Missing announcement contents.' });
-    if (!advisorId || isNaN(advisorId)) return res.status(400).json({ error: 'Invalid advisor ID' });
+    if (!userId || isNaN(userId)) return res.status(400).json({ error: 'Invalid advisor ID' });
 
-    const advisorExists = await checkAdvisor(advisorId);
+    const advisorExists = await checkAdvisor(userId);
     if (!advisorExists) return res.status(404).json({ error: 'Advisor not found' });
 
     if (!bucket) return res.status(500).send('Bucket name or file path not configured.');
 
     const filePath = "announcement";
     const ouputUrl = await uploadFile(bucket, filePath, file);
-    const newAnnouncement: Announcement = { fileUrl: ouputUrl, advisorId, topic, content };
+    const newAnnouncement: Announcement = { fileUrl: ouputUrl, advisorId: advisorExists.id, topic, content };
     const announcement = await createAnnouncement(newAnnouncement)
 
     res.status(201).json({
