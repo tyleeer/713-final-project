@@ -10,10 +10,10 @@ import { authenticateJWT as authenticate, authorizeRole as authorizeAdmin } from
 const router = express.Router();
 
 router.use(authenticate);
-router.use(authorizeAdmin);
+router.use(authorizeAdmin(["admin"]));
 
 router.post('/assign', assignAdvisorToStudent);
-router.get('/advisors', getAdvisorsWithStudentCount); 
+router.get('/advisors', getAdvisorsWithStudentCount);
 router.get('/appointments', getAdvisorAppointmentsSummary);
 router.put('/change', updateStudentAdvisor);
 

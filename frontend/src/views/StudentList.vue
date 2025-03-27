@@ -8,8 +8,9 @@ export default {
       advisors: [],
       search: '',
       checkAdmin: false,
-      selectedStudent: null,
-      selectedAdvisor: null
+      selectedStudentName: null,
+      selectedStudentUserId: null,
+      selectedAdvisorId: null
     };
   },
   mounted() {
@@ -27,12 +28,14 @@ export default {
         if (response.status === 200) {
           this.students = response?.data?.data?.map((val) => ({
             id: val?.profile?.id,
+            studentId: val?.profile?.Student?.id,
             firstName: val?.profile?.firstName,
             lastName: val?.profile?.lastName,
             department: val?.profile?.department,
             advisor: '',
             username: val?.username,
             profilePic: val?.profile?.profilePic,
+            advisorId: val?.profile?.Student?.advisorId, 
             advisor: val?.profile?.Student?.advisor ? 
             `${val?.profile?.Student?.advisor?.profile?.firstName} ${val?.profile?.Student?.advisor?.profile?.lastName}` 
             : "-"
@@ -54,40 +57,31 @@ export default {
       }
     },
     openAdvisorModal(student) {
-      this.selectedStudent = student;
-      this.selectedAdvisor = null;
+      console.log("student: ", student);
+      this.selectedStudentUserId = student.studentId;
+      this.selectedStudentName = `${student.firstName} ${student.lastName}`;
+      this.selectedAdvisorId = student.advisorId;
       advisorModal.showModal();
     },
     async saveAdvisor() {
-      if (!this.selectedStudent || !this.selectedAdvisor) {
-        alert('Please select a student and an advisor');
+      if (!this.selectedStudentUserId || !this.selectedAdvisorId) {
         return;
       }
 
       try {
-        const response = await http.put(`/student/${this.selectedStudent.id}/advisor`, {
-          advisorId: this.selectedAdvisor
+        const response = await http.post(`/assignment/assign`, {
+          advisorId: this.selectedAdvisorId,
+          studentId: this.selectedStudentUserId
         });
 
         if (response.status === 200) {
-          // Update the local students list
-          const studentIndex = this.students.findIndex(s => s.id === this.selectedStudent.id);
-          if (studentIndex !== -1) {
-            const selectedAdvisorObj = this.advisors.find(a => a.id === this.selectedAdvisor);
-            if (selectedAdvisorObj) {
-              this.students[studentIndex].advisor =
-                `${selectedAdvisorObj.profile.firstName} ${selectedAdvisorObj.profile.lastName}`;
-            }
-          }
-
-          // Close the modal
           advisorModal.close();
-
-          alert('Advisor assigned successfully');
+          // alert('Advisor assigned successfully');
+          this.fetchStudents();
         }
       } catch (error) {
         console.error('Error assigning advisor:', error);
-        alert('Failed to assign advisor');
+        // alert('Failed to assign advisor');
       }
     }
   }
@@ -96,7 +90,7 @@ export default {
 
 <template>
   <div class="container pt-4">
-    <h1 class="text-primary text-center text-3xl">Addmin Dashboard</h1>
+    <h1 class="text-primary text-center text-3xl">Admin Dashboard</h1>
     <div class="flex justify-between items-center">
       <h2 class="title text-black flex gap-2 items-center text-3xl mb-0!">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-people-fill"
@@ -104,7 +98,7 @@ export default {
           <path
             d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
         </svg>
-        Student List
+        รายชื่อนักศึกษา
       </h2>
       <label class="input search-input outline-0">
         <svg class="h-[1em] text-black opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -131,8 +125,8 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="student in students" :key="student.studentId">
-          <td>{{ student.id }}</td>
+        <tr v-for="(student, index) in students" :key="student.id">
+          <td>{{ index + 1}}</td>
           <td class="text-center!">
             <div v-if="!student.profilePic" class="avatar avatar-placeholder">
               <div class="bg-neutral text-neutral-content w-12 rounded-full">
@@ -151,7 +145,7 @@ export default {
           <td>{{ student.department }}</td>
           <td>{{ student.advisor }}</td>
           <td class="text-center!">
-            <button class="btn btn-primary" onclick="advisorModal.showModal()">
+            <button class="btn btn-primary" @click="openAdvisorModal(student)">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-pencil-square" viewBox="0 0 16 16">
                 <path
@@ -167,11 +161,15 @@ export default {
   </div>
   <dialog id="advisorModal" class="modal modal-bottom sm:modal-middle text-black">
     <div class="modal-box">
-      <h3 class="text-xl font-bold">โปรดเลือกอาจาย์ที่ปรึกษา</h3>
+      <h3 class="text-2xl font-bold mb-4">แก้ไขอาจาย์ที่ปรึกษา</h3>
+      <div class="flex gap-2 text-lg">
+        <span class="font-bold">นักศึกษา: </span>
+        <span>{{ selectedStudentName }}</span>
+      </div>
       <fieldset v-if="advisors.length > 0" class="fieldset">
-        <legend class="fieldset-legend text-lg">รายชื่อาจารย์</legend>
-        <select class="select w-full">
-          <option disabled selected>โปรดเลือก</option>
+        <legend class="fieldset-legend text-lg font-bold">รายชื่ออาจารย์</legend>
+        <select class="select w-full" v-model="selectedAdvisorId">
+          <option disabled :value="null">โปรดเลือกอาจารย์</option>
           <option v-for="advisor in advisors" :key="advisor.id" :value="advisor.id">
             {{ `${advisor.profile.firstName} ${advisor.profile.lastName}` }}
           </option>
@@ -180,9 +178,8 @@ export default {
       <p v-if="advisors.length == 0" class="py-4 text-center">ไม่พบอาจารย์ที่ปรึกษา</p>
       <div class="modal-action">
         <form method="dialog">
-          <!-- if there is a button in form, it will close the modal -->
-          <button class="btn btn-success mr-2">บันทึก</button>
-          <button class="btn">ยกเลิก</button>
+          <button type="button" class="btn btn-success mr-2" @click="saveAdvisor">บันทึก</button>
+          <button type="button" class="btn" onclick="advisorModal.close()">ยกเลิก</button>
         </form>
       </div>
     </div>

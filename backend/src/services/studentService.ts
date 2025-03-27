@@ -19,7 +19,19 @@ export const getStudent = async (query = '') => {
       }
     },
     include: {
-      profile: true,
+      profile: {
+        include: {
+          Student: {
+            include: {
+              advisor: {
+                include: {
+                  profile: true
+                }
+              }
+            }
+          }
+        }
+      },
     },
   });
 

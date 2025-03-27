@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { http } from '@/utils';
 import { RouterLink } from 'vue-router'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { Announcement } from '@/types/index';
 
 const announcements = ref<Announcement[] | null>(null)
 const errorMessage = ref<string | null>(null)
 const isLoading = ref(true)
 const checkAdvisor = ref(false)
+const checkAdmin = ref(false)
 
 const fetchAnnouncements = async () => {
   try {
@@ -26,18 +27,23 @@ const fetchAnnouncements = async () => {
 onMounted(async () => {
   const role = localStorage.getItem("role");
   checkAdvisor.value = role?.toLowerCase() == "advisor";
-  const response = await fetchAnnouncements()
-  if (response) {
-    // Ensure the data is an array
-    announcements.value = Array.isArray(response.data)
+  checkAdmin.value = role?.toLowerCase() == "admin";
+  
+  if (!checkAdmin.value) {
+    const response = await fetchAnnouncements()
+    if (response) {
+      // Ensure the data is an array
+      announcements.value = Array.isArray(response.data)
       ? response.data
       : response.data.announcement || []
+    }
   }
 })
 
 const downloadFile = (fileUrl: string) => {
   const link = document.createElement('a')
   link.href = fileUrl
+  link.target = "_blank"
   link.download = fileUrl.split('/').pop() || 'download'
   document.body.appendChild(link)
   link.click()
@@ -99,19 +105,19 @@ const downloadFile = (fileUrl: string) => {
             <p class="text-gray-600 mb-2 line-clamp-2">{{ announcement.content }}</p>
             <!-- Advisor Information -->
             <p class="text-sm text-gray-500 mb-2">
-              Posted by: {{ announcement.advisor.profile.firstName }} {{ announcement.advisor.profile.lastName }}
+              โดย: {{ announcement.advisor.profile.firstName }} {{ announcement.advisor.profile.lastName }}
             </p>
 
             <!-- Timestamp -->
             <div class="text-sm text-gray-500 mb-2">
-              {{ new Date(announcement.createdAt).toLocaleString() }}
+              เมื่อ: {{ new Date(announcement.createdAt).toLocaleString() }}
             </div>
 
             <!-- Download Button -->
             <div class="card-actions justify-end absolute bottom-3 right-3 xl:bottom-6 xl:right-6">
               <button v-if="announcement.fileUrl" @click="downloadFile(announcement.fileUrl)"
                 class="btn btn-primary btn-sm">
-                ดาวน์โหลดไฟล์
+                เปิดไฟล์
               </button>
             </div>
           </div>
