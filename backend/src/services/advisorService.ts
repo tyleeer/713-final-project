@@ -1,6 +1,10 @@
 import { Announcement, Comment, Reply } from "../models/types";
 import * as repo from "../repo/advisorRepo";
 
+export function getAdvisors() {
+  return repo.getAdvisors();
+}
+
 export function createAnnouncement(newAnnouncement: Announcement) {
   return repo.createAnnouncement(newAnnouncement);
 }

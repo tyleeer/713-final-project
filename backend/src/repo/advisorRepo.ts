@@ -3,6 +3,15 @@ import { Announcement, Comment, Reply } from "../models/types";
 
 const prisma = new PrismaClient();
 
+export function getAdvisors() {
+    return prisma.advisor.findMany({
+        include: {
+            profile: true
+        }
+    });
+}
+
+
 export function createAnnouncement(newAnnouncement: Announcement) {
     return prisma.announcement.create({
         data: newAnnouncement,

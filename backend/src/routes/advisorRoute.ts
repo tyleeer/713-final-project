@@ -1,7 +1,7 @@
 import multer from 'multer';
 import { uploadFile } from '../services/uploadFileService';
 import { authenticateJWT, authorizeRole } from '../middleware/authMiddleware';
-import { checkAdvisor, checkStudent, createAnnouncement, createComment, checkComment, createReply } from '../services/advisorService';
+import { checkAdvisor, checkStudent, createAnnouncement, createComment, checkComment, createReply, getAdvisors } from '../services/advisorService';
 import { getConversation } from '../services/commentService';
 import express, { Request, Response } from 'express';
 import { Announcement, Comment, Reply } from '../models/types';
@@ -9,6 +9,18 @@ import { Announcement, Comment, Reply } from '../models/types';
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 const bucket = process.env.SUPABASE_BUCKET_NAME;
+
+router.get('/', async (_, res: Response) => {
+  try {
+    const advisor = await getAdvisors()
+    res.status(200).json({
+      advisor
+    });
+  } catch (error) {
+    res.status(500).send('Error get all advisors.');
+  }
+});
+
 
 router.get('/comment', async (req: Request, res: Response) => {
   try {
