@@ -1,7 +1,26 @@
 <template>
-  <div class="student-list-container">
-    <h1 class="title">Student List</h1>
-    <input v-model="search" type="text" placeholder="ค้นหา" class="search-input" @input="fetchStudents(search)" />
+  <div class="container pt-4">
+    <h1 class="text-primary text-center text-3xl">Addmin Dashboard</h1>
+    <div class="flex justify-between items-center">
+      <h2 class="title text-black flex gap-2 items-center text-3xl mb-0!">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-people-fill"
+          viewBox="0 0 16 16">
+          <path
+            d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+        </svg>
+        Student List
+      </h2>
+      <label class="input search-input outline-0">
+        <svg class="h-[1em] text-black opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <input v-model="search" type="search" class="grow text-black" placeholder="ค้นหา"
+          @input="fetchStudents(search)" />
+      </label>
+    </div>
     <table class="student-table">
       <thead>
         <tr>
@@ -60,15 +79,7 @@ export default {
 </script>
 
 <style scoped>
-.student-list-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Arial', sans-serif;
-}
-
 .title {
-  text-align: center;
   color: #4CAF50;
   /* โทนสีหลักที่ใช้ในหน้า login */
   margin-bottom: 20px;
@@ -104,15 +115,8 @@ export default {
 }
 
 .search-input {
-  width: 30%;
-  padding: 5px;
   font-size: 16px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
   color: #333;
-  float: right;
 
   &:hover {
     border-color: #4CAF50;

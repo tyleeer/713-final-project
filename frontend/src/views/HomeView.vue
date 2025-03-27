@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import AnnouncemnetView from '../views/AnnouncementView.vue';
+import StudentListView from '../views/StudentList.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-// สร้างข้อความต้อนรับ
-const message = ref('Welcome to the Home Page!');
-const checkAdmin = ref<boolean>(false);
-
 // ใช้ useRouter สำหรับการรีไดเรคหน้า
 const router = useRouter();
+const checkAdmin = ref<boolean>(false);
 
 // ฟังก์ชันการออกจากระบบ
 const logout = () => {
@@ -24,8 +22,8 @@ onMounted(() => {
 
 <template>
   <main class="pt-2 flex flex-col items-center">
-    <h1 v-if="checkAdmin">{{ message }}</h1> <!-- แสดงข้อความต้อนรับ -->
     <AnnouncemnetView v-if="!checkAdmin" />
+    <StudentListView v-if="checkAdmin" />
   </main>
 </template>
 

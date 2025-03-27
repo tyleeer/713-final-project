@@ -8,7 +8,6 @@
       </RouterLink>
       <nav class="nav-links">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
-        <RouterLink to="/StudentList" class="nav-link" v-if="isAuthenticated && isAdmin">Student List</RouterLink>
         <RouterLink to="/login" class="nav-link" v-if="!isAuthenticated">Login</RouterLink>
         <RouterLink to="/register" class="nav-link" v-if="!isAuthenticated">Register</RouterLink>
         <RouterLink to="/advisorReg" class="nav-link" v-if="isAuthenticated && isAdmin">Add Advisor</RouterLink>
