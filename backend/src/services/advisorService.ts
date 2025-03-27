@@ -13,8 +13,8 @@ export function createReply(newReply: Reply) {
   return repo.createReply(newReply);
 }
 
-export function checkAdvisor(advisorId: number) {
-  return repo.checkAdvisor(advisorId);
+export function checkAdvisor(userId: number) {
+  return repo.checkAdvisor(userId);
 }
 
 export function checkStudent(studentId: number) {

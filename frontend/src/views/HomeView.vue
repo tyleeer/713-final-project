@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue';
-import { ref } from 'vue';
+import AnnouncemnetView from '../views/AnnouncementView.vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 // สร้างข้อความต้อนรับ
 const message = ref('Welcome to the Home Page!');
+const checkAdmin = ref<boolean>(false);
 
 // ใช้ useRouter สำหรับการรีไดเรคหน้า
 const router = useRouter();
@@ -14,30 +15,23 @@ const logout = () => {
   localStorage.removeItem('token'); // ลบ JWT token ออกจาก localStorage
   router.push('/login'); // รีไดเรคไปยังหน้า login
 };
+
+onMounted(() => {
+  const role = localStorage.getItem("role");
+  checkAdmin.value = role?.toLowerCase() == "admin";
+})
 </script>
 
 <template>
-  <main class="home-page">
-    <h1>{{ message }}</h1> <!-- แสดงข้อความต้อนรับ -->
-    <TheWelcome /> <!-- แสดงคอมโพเนนต์ TheWelcome -->
-    <button @click="logout">Logout</button> <!-- ปุ่มออกจากระบบ -->
+  <main class="pt-2 flex flex-col items-center">
+    <h1 v-if="checkAdmin">{{ message }}</h1> <!-- แสดงข้อความต้อนรับ -->
+    <AnnouncemnetView v-if="!checkAdmin" />
   </main>
 </template>
 
 <style scoped>
-.home-page {
-  text-align: center;
-  margin-top: 50px;
-  background-color: #F9F7F7;
-  /* สีพื้นหลัง */
-  color: #112D4E;
-  /* สีข้อความหลัก */
-  font-family: Arial, sans-serif;
-}
-
 h1 {
   color: #3F72AF;
-  /* สีของข้อความ */
   font-size: 2rem;
 }
 
