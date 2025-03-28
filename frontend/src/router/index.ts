@@ -8,6 +8,7 @@ import ResetPasswordView from '../views/ResetPasswordView.vue';
 import ProfileView from '../views/AboutView.vue'; // ตัวอย่างหน้าโปรไฟล์ที่ต้องการการยืนยันตัวตน
 import AdvisorChat from '../views/AdvisorChat.vue';
 import StudentChat from '../views/StudentChat.vue';
+import AdvisorListView from '../views/AdvisorListView.vue';
 
 
 const router = createRouter({
@@ -64,6 +65,12 @@ const router = createRouter({
       name: 'create-announcement',
       component: () => import('../views/CreateAnnouncementView.vue'),
     },
+    {
+      path: '/AdvisorList',
+      name: 'AdvisorList',
+      component: () => import('../views/AdvisorListView.vue'),
+    },
+
   ],
 });
 
