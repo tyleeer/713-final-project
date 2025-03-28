@@ -3,7 +3,8 @@ import {
     assignAdvisorToStudent,
     getAdvisorsWithStudentCount,
     getAdvisorAppointmentsSummary,
-    updateStudentAdvisor
+    updateStudentAdvisor,
+    getAdvisorWithStudentCountById
 } from '../controllers/assignAdvisorController';
 import { authenticateJWT as authenticate, authorizeRole as authorizeAdmin } from '../middleware/authMiddleware';
 
@@ -16,5 +17,6 @@ router.post('/assign', assignAdvisorToStudent);
 router.get('/advisors', getAdvisorsWithStudentCount);
 router.get('/appointments', getAdvisorAppointmentsSummary);
 router.put('/change', updateStudentAdvisor);
+router.get('/advisor-students', getAdvisorWithStudentCountById);
 
 export default router;

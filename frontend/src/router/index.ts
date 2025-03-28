@@ -64,6 +64,11 @@ const router = createRouter({
       name: 'create-announcement',
       component: () => import('../views/CreateAnnouncementView.vue'),
     },
+    {
+      path: '/advisor-studentlist',
+      name: 'advisor-studentlist',
+      component: () => import('../views/AdvisorStudentList.vue'),
+    },
   ],
 });
 
