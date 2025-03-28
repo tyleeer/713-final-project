@@ -87,7 +87,7 @@ export default {
       profilePic: null,
       password: '',
       confirmPassword: '',
-      role: 'Adviser',
+      role: 'advisor',
       errorMessage: '',
       fileName: '',
     };
