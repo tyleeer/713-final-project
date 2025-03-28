@@ -72,11 +72,6 @@ const router = createRouter({
       component: () => import('../views/AdvisorListView.vue'),
     },
 
-      path: '/advisor-studentlist',
-      name: 'advisor-studentlist',
-      component: () => import('../views/AdvisorStudentList.vue'),
-    },
-
   ],
 });
 
