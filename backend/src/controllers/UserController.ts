@@ -1,6 +1,6 @@
-// src/controllers/userController.ts
 import { Request, Response } from 'express';
-import prisma from '../prismaClient';
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 // Get User Profile
 export const getProfile = async (req: Request, res: Response) => {

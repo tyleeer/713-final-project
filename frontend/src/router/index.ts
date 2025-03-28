@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: '/AdvisorReg',
       name: 'AdvisorReg',
-      component: () => import('../views/advisorRegView.vue'),
+      component: () => import('../views/AdvisorRegView.vue'),
     },
     {
       path: '/StudentList',

@@ -9,7 +9,7 @@ import advisorRoute from './routes/advisorRoute';
 import announcementRoute from './routes/announcementRoute';
 import assignmentRoute from './routes/assignmentRoute';
 import commentRoute from './routes/commentRoute';
-import { getProfile } from './controllers/userController';
+import { getProfile } from './controllers/UserController';
 import { authenticateJWT } from './middleware/authMiddleware';
 
 
