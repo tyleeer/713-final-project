@@ -15,11 +15,17 @@ import { authenticateJWT } from './middleware/authMiddleware';
 
 dotenv.config();
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+console.log("allowedOrigins: ", allowedOrigins);
+const options: cors.CorsOptions = {
+    origin: allowedOrigins.length > 0 ? allowedOrigins : false, // Prevent empty origin issue
+};
+
+app.use(cors(options));
 app.use(express.json());
-app.use(cors());
 app.use(morgan('dev'));
 
 app.use('/auth', authRoute);
