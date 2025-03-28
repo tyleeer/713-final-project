@@ -1,21 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es2020",  /* กำหนดเวอร์ชัน JavaScript สำหรับการคอมไพล์ */
-    "module": "commonjs", /* ใช้ CommonJS สำหรับโมดูล */
-    "moduleResolution": "node",  /* ใช้การกำหนดโมดูลแบบ Node.js */
-    "rootDir": "./src",  /* กำหนดโฟลเดอร์รากสำหรับไฟล์ source */
-    "outDir": "./dist",  /* กำหนดโฟลเดอร์สำหรับไฟล์ที่คอมไพล์แล้ว */
-    "esModuleInterop": true,  /* รองรับการนำเข้าของโมดูล CommonJS */
-    "forceConsistentCasingInFileNames": true,  /* ตรวจสอบความถูกต้องของการตั้งชื่อไฟล์ */
-    "strict": true,  /* เปิดใช้งานตัวเลือกการตรวจสอบประเภทที่เข้มงวด */
-    "skipLibCheck": true,  /* ข้ามการตรวจสอบไลบรารี .d.ts */
-    "resolveJsonModule": true,  /* รองรับการนำเข้าไฟล์ JSON */
-    "declaration": true,  /* สร้างไฟล์ .d.ts */
-    "strictPropertyInitialization": true,  /* ตรวจสอบการตั้งค่า properties ใน class */
-    "noImplicitAny": true,  /* ห้ามใช้ any โดยไม่ได้กำหนด */
-    "noUnusedLocals": true,  /* ตรวจสอบตัวแปรที่ไม่ได้ใช้งาน */
-    "noUnusedParameters": true  /* ตรวจสอบพารามิเตอร์ที่ไม่ได้ใช้งาน */
+    "target": "es2020",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "src/express.d.ts"],  /* รวมไฟล์ TypeScript ทั้งหมดจากโฟลเดอร์ src */
-  "exclude": ["node_modules", "dist"]  /* ยกเว้นโฟลเดอร์ node_modules และ dist */
+  "include": [
+    "src/**/*.ts",
+    "src/express.d.ts"
+  ], /* รวมไฟล์ TypeScript ทั้งหมดจากโฟลเดอร์ src */
+  "exclude": [
+    "node_modules",
+    "dist"
+  ] /* ยกเว้นโฟลเดอร์ node_modules และ dist */
 }
