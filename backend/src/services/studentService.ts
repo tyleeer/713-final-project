@@ -19,7 +19,7 @@ export const getStudent = async (query = '') => {
         { username: { contains: query } }
       ],
       AND: {
-        role: 'Student'
+        role: 'student'
       }
     },
     include: {
