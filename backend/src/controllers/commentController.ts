@@ -17,8 +17,23 @@ export const createCommend = async (req: Request, res: Response) => {
     const comment = await commentService.createCommend(student.id, advisorId, content);
     res.status(201).json(comment);
   } catch (error) {
-    console.error();
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create comment' });
+  }
+};
 
+export const createCommendByAdvisor = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.userId ? parseInt(req.user?.userId) : 0;
+    const advisor = await checkAdvisor(userId);
+    if (!advisor) throw new Error('User not authenticated');
+
+    const { content, studentId } = req.body;
+
+    const comment = await commentService.createCommendByAdvisor(+studentId, advisor.id, content);
+    res.status(201).json(comment);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to create comment' });
   }
 };
@@ -42,6 +57,7 @@ export const advisorReply = async (req: Request, res: Response) => {
     const reply = await commentService.replytoComment(commentId, content, false);
     res.status(201).json(reply);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to post reply' });
   }
 };
@@ -53,7 +69,8 @@ export const getStudentConversations = async (req: Request, res: Response) => {
     const student = await getStudentByUserId(userId);
     if (!student) throw new Error('User not authenticated');
 
-    const comments = await commentService.getStudentComments(student.id);
+    const studentId = student.profile?.Student?.id ? student.profile?.Student?.id : 0;
+    const comments = await commentService.getStudentComments(studentId);
     res.json(comments);
   } catch (error) {
     res.status(500).json({ error: 'Failed to get conversations' });
@@ -68,9 +85,11 @@ export const getAdvisorConversations = async (req: Request, res: Response) => {
     const advisor = await checkAdvisor(userId);
     if (!advisor) throw new Error('User not authenticated');
 
-    const comments = await commentService.getAdvisorComment(advisor.id);
+    const studentId = parseInt(req.query?.studentId as string) || 0;
+    const comments = await commentService.getAdvisorComment(advisor.id, studentId);
     res.json(comments);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to get conversations' });
   }
 };

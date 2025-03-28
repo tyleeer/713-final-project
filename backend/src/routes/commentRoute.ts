@@ -7,6 +7,8 @@ const router = express.Router();
 // นักศึกษาสร้างcommentใหม่
 router.post('/', authenticateJWT, authorizeRole(['student']), commentController.createCommend);
 
+router.post('/advisor', authenticateJWT, authorizeRole(['advisor']), commentController.createCommendByAdvisor);
+
 // นักศึกษาตอบกลับ
 router.post('/student-reply', authenticateJWT, authorizeRole(['student']), commentController.studentReply);
 

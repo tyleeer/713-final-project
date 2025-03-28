@@ -8,7 +8,37 @@ export const createCommend = async (studentId: number, advisorId: number, conten
     data: {
       content,
       studentId,
-      advisorId
+      advisorId,
+      author: "student"
+    },
+    include: {
+      student: {
+        include: {
+          profile: true
+        }
+      },
+      advisor: {
+        include: {
+          profile: true
+        }
+      },
+      replies: {
+        include: {
+          comment: true
+        }
+      },
+    },
+
+  });
+};
+
+export const createCommendByAdvisor = async (studentId: number, advisorId: number, content: string) => {
+  return await prisma.comment.create({
+    data: {
+      content,
+      studentId,
+      advisorId,
+      author: "advisor"
     },
     include: {
       student: {
@@ -43,16 +73,13 @@ export const replytoComment = async (commentId: number, content: string, isStude
   });
   if (!comment) throw new Error('Comment not found');
 
-  const senderId = isStudent ? comment.studentId : comment.advisorId;
+  const author = isStudent ? "student" : "advisor";
 
   return await prisma.reply.create({
     data: {
       content,
       commentId,
-      //ใช้ studentId/advisorId จาก comment แรก
-      ...(isStudent
-        ? { studentId: senderId }
-        : { advisorId: senderId })
+      author
     },
     include: {
       comment: {
@@ -92,9 +119,18 @@ export const getStudentComments = async (studentId: number) => {
 };
 
 //ดึงcommentอาจารย์ทั้งหมด
-export const getAdvisorComment = async (advisorId: number) => {
+export const getAdvisorComment = async (advisorId: number, studentId: number) => {
   return await prisma.comment.findMany({
-    where: { advisorId },
+    where: {
+      AND: [
+        {
+          advisorId
+        },
+        {
+          studentId
+        }
+      ]
+    },
     include: {
       student: {
         include: {

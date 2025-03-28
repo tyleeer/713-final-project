@@ -8,7 +8,9 @@ import authRoute from './routes/authRoute';
 import advisorRoute from './routes/advisorRoute';
 import announcementRoute from './routes/announcementRoute';
 import assignmentRoute from './routes/assignmentRoute';
-// import commentRoute from './routes/commentRoute';
+import commentRoute from './routes/commentRoute';
+import { getProfile } from './controllers/userController';
+import { authenticateJWT } from './middleware/authMiddleware';
 
 
 dotenv.config();
@@ -26,7 +28,8 @@ app.use('/student', studentRoute);
 app.use('/advisor', advisorRoute);
 app.use('/announcement', announcementRoute);
 app.use('/assignment', assignmentRoute);
-// app.use('/comment', commentRoute)
+app.use('/comment', commentRoute)
+app.use('/profile', authenticateJWT, getProfile)
 
 
 

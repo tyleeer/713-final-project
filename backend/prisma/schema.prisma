@@ -29,8 +29,8 @@ model Profile {
 }
 
 model Role {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
   users String?
 }
 
@@ -58,6 +58,7 @@ model Student {
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
+  author    String   @default("")
   studentId Int
   advisorId Int
   student   Student  @relation(fields: [studentId], references: [id])
@@ -68,6 +69,7 @@ model Comment {
 
 model Reply {
   id        Int      @id @default(autoincrement())
+  author    String   @default("")
   content   String
   commentId Int
   comment   Comment  @relation(fields: [commentId], references: [id])

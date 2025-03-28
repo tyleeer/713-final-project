@@ -175,8 +175,6 @@ export const resetPassword = async (email: string, oldPassword: string, newPassw
     throw new Error('User not found');
   }
 
-  console.log(oldPassword)
-
   const comparePassword = await bcrypt.compare(oldPassword, user.password);
   if (!comparePassword) {
     throw new Error('Invalid old password');
