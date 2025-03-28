@@ -5,10 +5,6 @@ import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import ResetPasswordView from '../views/ResetPasswordView.vue';
-import ProfileView from '../views/AboutView.vue'; // ตัวอย่างหน้าโปรไฟล์ที่ต้องการการยืนยันตัวตน
-import AdvisorChat from '../views/AdvisorChat.vue';
-import StudentChat from '../views/StudentChat.vue';
-import AdvisorListView from '../views/AdvisorListView.vue';
 
 
 
@@ -38,18 +34,6 @@ const router = createRouter({
       path: '/reset-password',
       name: 'reset-password',
       component: ResetPasswordView,
-    },
-    // หน้า Profile ที่ต้องมีการยืนยันตัวตน
-    {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView,
-    },
-    // หน้า About
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
     },
     {
       path: '/AdvisorReg',
@@ -84,11 +68,6 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/appointment',
-      name: 'appointment',
-      component: () => import('../views/AdvisorAppointmentView.vue'),
-    },
-    {
       path: '/advisor-appointment',
       name: 'advisor-appointment',
       component: () => import('../views/AdvisorAppointmentView.vue'),
@@ -97,6 +76,11 @@ const router = createRouter({
       path: '/advisor-studentlist',
       name: 'advisor-studentlist',
       component: () => import('../views/AdvisorStudentList.vue'),
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'not-found',
+      component: () => import('../views/NotFoundView.vue'),
     }
   ],
 });
