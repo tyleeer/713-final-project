@@ -8,16 +8,11 @@ declare global {
     interface Request {
       user?: {
         userId: string;
-        role: string,
-        student: { id: number }; // student.id เป็นตัวเลข
-        advisor?: never;
+        role: string;
+        email: string;
+        iat: number;
+        exp: number;
       }
-      | {
-        userId: string;
-        role: string,
-        advisor: { id: number }; // advisor.id เป็นตัวเลข
-        student?: never;
-      };
     }
   }
 }
