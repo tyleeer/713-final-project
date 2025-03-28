@@ -127,3 +127,6 @@ router.post('/announcement', authenticateJWT, authorizeRole(['advisor']), upload
 });
 
 export default router;
+
+
+

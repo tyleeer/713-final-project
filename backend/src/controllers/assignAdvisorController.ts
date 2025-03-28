@@ -14,7 +14,7 @@ export const assignAdvisorToStudent = async (req: Request, res: Response) => {
     const advisor = await prisma.advisor.findUnique({
       where: { id: advisorId }
     });
-    
+
     if (!student || !advisor) {
       return res.status(404).json({ error: 'Not found Student or Advisor' });
     }
@@ -82,6 +82,37 @@ export const getAdvisorsWithStudentCount = async (req: Request, res: Response) =
   }
 };
 
+// แสดงข้อมูลอาจารย์ที่ปรึกษาและนักศึกษาที่ดูแล (แบ่งหน้า)
+export const getAdvisorWithStudentCountById = async (req: Request, res: Response) => {
+  try {
+    const userData = req.user;
+    const userId = userData?.userId ? parseInt(userData?.userId) : 0
+
+    const advisorWithStudent = await prisma.advisor.findFirstOrThrow({
+      where: {
+        profile: {
+          userId: userId
+        }
+      },
+      include: {
+        profile: true,
+        students: {
+          include: {
+            profile: true
+          }
+        }
+      }
+    });
+
+    res.status(200).json({
+      advisor: advisorWithStudent
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch advisors' });
+  }
+};
+
 // แสดงการนัดหมายอาจารย์กับนักศึกษาแยกตามสถานะ
 export const getAdvisorAppointmentsSummary = async (req: Request, res: Response) => {
   try {
@@ -100,7 +131,7 @@ export const getAdvisorAppointmentsSummary = async (req: Request, res: Response)
     const appointments = await prisma.appointment.findMany({
       where: {
         advisorId: parseInt(advisorId),
-        status: status as any 
+        status: status as any
       },
       include: {
         student: {

@@ -66,9 +66,15 @@ const router = createRouter({
       component: () => import('../views/CreateAnnouncementView.vue'),
     },
     {
+
       path: '/AdvisorList',
       name: 'AdvisorList',
       component: () => import('../views/AdvisorListView.vue'),
+    },
+
+      path: '/advisor-studentlist',
+      name: 'advisor-studentlist',
+      component: () => import('../views/AdvisorStudentList.vue'),
     },
 
   ],
