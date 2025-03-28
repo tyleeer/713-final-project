@@ -134,3 +134,7 @@ export const getConversation = async (studentId: number, advisorId: number) => {
     }
   });
 };
+
+export const getComment = async () => {
+  return await prisma.comment.findMany();
+};

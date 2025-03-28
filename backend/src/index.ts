@@ -8,6 +8,7 @@ import authRoute from './routes/authRoute';
 import advisorRoute from './routes/advisorRoute';
 import announcementRoute from './routes/announcementRoute';
 import assignmentRoute from './routes/assignmentRoute';
+import commentRoute from './routes/commentRoute';
 
 
 dotenv.config();
@@ -25,6 +26,11 @@ app.use('/student', studentRoute);
 app.use('/advisor', advisorRoute);
 app.use('/announcement', announcementRoute);
 app.use('/assignment', assignmentRoute);
+app.use('/comment', commentRoute)
+
+app.get('/comment2', (_, res) => {
+    res.json({ "msg": 5555 });
+});
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`);

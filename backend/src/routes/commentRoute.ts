@@ -20,6 +20,8 @@ router.get('/student', authenticateJWT, authorizeRole(['student']), commentContr
 router.get('/advisor', authenticateJWT, authorizeRole(['advisor']), commentController.getAdvisorConversations);
 
 // ดึงข้อความของนักศึกษารายบุคล สำหรับอาจารย์
-router.get('/conversation/:studentId', authenticateJWT, authorizeRole(['advisor']), commentController.getConversation);
+//comment
+router.get('/comment', commentController.getComment);
+
 
 export default router;

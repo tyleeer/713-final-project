@@ -103,3 +103,14 @@ export const getConversation = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to get conversation' });
   }
 }; 
+
+
+export const getComment = async (req: Request, res: Response) => {
+
+  try {
+    const comments = await commentService.getComment();
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get conversations' });
+  }
+};
