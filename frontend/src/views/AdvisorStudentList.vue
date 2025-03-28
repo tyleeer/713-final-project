@@ -89,6 +89,7 @@ export default {
             <th class="text-center">ชื่อ</th>
             <th class="text-center">นามสกุล</th>
             <th class="text-center">ภาควิชา</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -101,10 +102,15 @@ export default {
                 </div>
               </div>
             </td>
-            <td class="text-center">{{ student.studentId }}</td>
+            <td class="text-center">{{ student.profile.user.username }}</td>
             <td class="text-center">{{ student.profile.firstName }}</td>
             <td class="text-center">{{ student.profile.lastName }}</td>
             <td class="text-center">{{ student.profile.department }}</td>
+            <td class="text-center">
+              <RouterLink class="event-link btn btn-primary text-white! p-3!" :to="{ name: 'advisor-comment', params: { id: student.id } }">
+                Comment
+              </RouterLink>
+            </td>
           </tr>
         </tbody>
       </table>

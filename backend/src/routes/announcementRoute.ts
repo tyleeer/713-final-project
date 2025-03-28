@@ -12,7 +12,7 @@ router.get('/', authenticateJWT, async (req: Request, res: Response) => {
     const userId = userData?.userId ? parseInt(userData?.userId) : 0
     if (userData?.role.toLowerCase() == "student") {
       const studentById = await getStudentByUserId(userId)
-      const studentId = studentById?.id ?? 0;
+      const studentId = studentById?.profile?.Student?.id ?? 0;
       const advisorId = studentById?.profile?.Student?.advisorId ?? 0;
       const announcement = await getAnnouncementsByStudent(studentId, advisorId)
       return res.status(200).json({

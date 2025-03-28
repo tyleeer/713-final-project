@@ -98,7 +98,11 @@ export const getAdvisorWithStudentCountById = async (req: Request, res: Response
         profile: true,
         students: {
           include: {
-            profile: true
+            profile: {
+              include: {
+                user: true
+              }
+            }
           }
         }
       }

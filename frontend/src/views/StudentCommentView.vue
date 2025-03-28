@@ -1,28 +1,21 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from 'vue'
+import { http } from '@/utils';
 
 const comments = ref<any[]>([]);
 const loading = ref<boolean>(true);
+const isNoAdvisor = ref<boolean>(true);
 const error = ref<string | null>(null);
 const lastUpdated = ref<string>(new Date().toLocaleString());
 const searchQuery = ref<string>("");
 const currentUser = ref({
-  id: "user-001",
-  name: "Chalisa Wongsa",
-  role: "Student",
+  id: "",
+  name: "",
+  role: "",
   avatar: "",
 });
 const newComment = ref<string>("");
 const attachedFiles = ref<File[]>([]);
-const activeReplyForm = ref<string | null>(null);
-
-const toggleReplyForm = (commentId: string) => {
-  activeReplyForm.value = activeReplyForm.value === commentId ? null : commentId;
-};
-
-const cancelReply = () => {
-  activeReplyForm.value = null;
-};
 const replyContents = ref<Record<string, string>>({});
 
 // Methods
@@ -48,22 +41,16 @@ const postComment = async () => {
 
   try {
     const newCommentData = {
-      id: `comment-${Date.now()}`,
-      author: { ...currentUser.value },
       content: newComment.value,
-      createdAt: new Date().toISOString(),
-      files: attachedFiles.value.map((file) => ({
-        name: file.name,
-        size: file.size,
-        type: file.type || file.name.split(".").pop(),
-        url: URL.createObjectURL(file),
-      })),
-      replies: [],
     };
 
-    comments.value.unshift(newCommentData);
-    newComment.value = "";
-    attachedFiles.value = [];
+    const response = await http.post('/comment', newCommentData)
+    if (response.status == 201) {
+      newComment.value = "";
+      fetchComment()
+    } else {
+      throw new Error(response.data);
+    }
   } catch (err) {
     error.value = "Failed to post the comment.";
   } finally {
@@ -71,45 +58,27 @@ const postComment = async () => {
   }
 };
 
-const handleFileUpload = (event: Event) => {
-  const files = (event.target as HTMLInputElement).files;
-  if (files) {
-    attachedFiles.value = [...attachedFiles.value, ...Array.from(files)];
-  }
-  (event.target as HTMLInputElement).value = ""; // Reset file input
-};
-
-const triggerFileInput = () => {
-  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-  if (fileInput) {
-    fileInput.click();
-  }
-};
-
-const removeFile = (index: number) => {
-  attachedFiles.value.splice(index, 1);
-};
-
-const postReply = (commentId: string) => {
+const postReply = async (commentId: string) => {
   if (!replyContents.value[commentId]?.trim()) {
     error.value = "Reply content cannot be empty.";
     return;
   }
+  try {
+    const newReplyData = {
+      commentId,
+      content: replyContents.value[commentId]
+    }
 
-  const replyData = {
-    id: `reply-${Date.now()}`,
-    author: { ...currentUser.value },
-    content: replyContents.value[commentId],
-    time: new Date().toISOString(),
-  };
-
-  const comment = comments.value.find((c) => c.id === commentId);
-  if (comment) {
-    comment.replies.push(replyData);
+    const response = await http.post('/comment/student-reply', newReplyData)
+    if (response.status == 201) {
+      replyContents.value[commentId] = "";
+      await fetchComment()
+    } else {
+      throw new Error(response.data);
+    }
+  } catch (error) {
+    console.log(error);
   }
-
-  replyContents.value[commentId] = "";
-  activeReplyForm.value = null;
 };
 
 const formatTime = (date: string) => {
@@ -119,42 +88,149 @@ const formatTime = (date: string) => {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23", // Ensures 24-hour format
+    timeZone: "Asia/Bangkok"
   };
-  return new Date(date).toLocaleDateString(undefined, options);
+  return new Date(date).toLocaleString("en-US", options); // Change to "th-TH" if needed
 };
 
-const formatFileSize = (bytes: number) => {
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  if (bytes === 0) return "0 Byte";
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
-};
+const fetchProfile = async () => {
+  try {
+    const response = await http.get('/profile')
+    if (response.status == 200) {
+      const userProfile = response.data
+      currentUser.value = {
+        id: userProfile.Student.studentId,
+        name: `${userProfile.firstName} ${userProfile.lastName}`,
+        role: userProfile.position,
+        avatar: userProfile.profilePic,
+      }
+      isNoAdvisor.value = userProfile.Student.advisorId == null
+    }
+  } catch (error) {
+    console.error('Fetch Error:', error)
+  }
+}
 
-const getFileIcon = (file: { type: string }) => {
-  if (file.type.includes("pdf")) return "pdf-icon";
-  if (file.type.includes("word")) return "word-icon";
-  if (file.type.includes("excel")) return "excel-icon";
-  if (file.type.includes("powerpoint")) return "ppt-icon";
-  if (file.type.includes("image")) return "image-icon";
-  if (file.type.includes("zip") || file.type.includes("rar")) return "archive-icon";
-  return "file-icon";
-};
+const fetchComment = async () => {
+  try {
+    const response = await http.get('/comment/student')
+    if (response.status == 200) {
+      comments.value = response.data;
+    }
+  } catch (error) {
+    console.error('Fetch Error:', error)
+  }
+}
+
+onMounted(() => {
+  fetchProfile();
+  fetchComment();
+})
 </script>
 
 <template>
-  <div class="discussion-container">
-    <div class="discussion-header">
+  <div class="discussion-container container mt-5">
+    <div class="discussion-header bg-white!">
       <h2>Discussion Board</h2>
       <div class="discussion-stats">
-        <span class="comment-count">{{ comments.length }} comments</span>
-        <span class="separator">•</span>
         <span class="last-updated">Last updated: {{ lastUpdated }}</span>
       </div>
     </div>
 
     <div class="discussion-body">
+      <!-- รายการความคิดเห็น -->
+      <div class="comments-list mt-0!">
+        <div v-if="comments && comments.length > 0" v-for="(comment, index) in comments" :key="comment.id"
+          class="comment-card">
+          <div v-if="comment.author == 'student'" class="comment-header mb-0!">
+            <div class="user-avatar">
+              <img :src="currentUser.avatar" :alt="currentUser.name" v-if="currentUser.avatar">
+              <div class="avatar-placeholder" v-else>{{ currentUser.name.charAt(0) }}</div>
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ currentUser.name }}</span>
+              <span class="user-role mr-2">{{ comment.author }}</span>
+              <span class="comment-time">{{ formatTime(comment.createdAt) }}</span>
+            </div>
+          </div>
+
+          <div v-if="comment.author == 'advisor'" class="comment-header mb-0!">
+            <div class="user-avatar">
+              <img :src="comment.advisor.profile.profilePic" :alt="comment.advisor.profile.profilePic"
+                v-if="comment.advisor.profile.profilePic">
+              <div class="avatar-placeholder" v-else>{{ comment.advisor.profile.firstName.charAt(0) }}</div>
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ `${comment.advisor.profile.firstName} ${comment.advisor.profile.lastName}`
+                }}</span>
+              <span class="user-role mr-2">{{ comment.author }}</span>
+              <span class="comment-time">{{ formatTime(comment.createdAt) }}</span>
+            </div>
+          </div>
+
+          <div class="comment-content text-gray-700">
+            <p>{{ comment.content }}</p>
+          </div>
+
+          <div class="comment-footer">
+            <p class="flex gap-1 items-center text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-reply"
+                viewBox="0 0 16 16">
+                <path
+                  d="M6.598 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.7 8.7 0 0 0-1.921-.306 7 7 0 0 0-.798.008h-.013l-.005.001h-.001L7.3 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L2.614 8.254l-.042-.028a.147.147 0 0 1 0-.252l.042-.028zM7.8 10.386q.103 0 .223.006c.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96z" />
+              </svg> Reply
+            </p>
+
+            <!-- แสดงการตอบกลับ -->
+            <div v-if="comment.replies && comment.replies.length > 0" class="replies-list">
+              <div v-for="reply in comment.replies" :key="reply.id" class="reply-card">
+                <div v-if="reply.author == 'advisor'" class="reply-header">
+                  <div class="user-avatar small">
+                    <img :src="comment.advisor.profile.profilePic" :alt="comment.advisor.profile.firstName"
+                      v-if="comment.advisor.profile.profilePic">
+                    <div class="avatar-placeholder" v-else>{{ comment.advisor.profile.firstName.charAt(0) }}</div>
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name">{{ `${comment.advisor.profile.firstName}
+                      ${comment.advisor.profile.lastName}` }}</span>
+                    <span class="user-role mr-2">{{ reply.author }}</span>
+                    <span class="reply-time">{{ formatTime(reply.createdAt) }}</span>
+                  </div>
+                </div>
+
+                <div v-if="reply.author == 'student'" class="reply-header">
+                  <div class="user-avatar small">
+                    <img :src="currentUser.avatar" :alt="currentUser.name" v-if="currentUser.avatar">
+                    <div class="avatar-placeholder" v-else>{{ currentUser.name.charAt(0) }}</div>
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name">{{ currentUser.name }}</span>
+                    <span class="user-role mr-2">{{ reply.author }}</span>
+                    <span class="reply-time">{{ formatTime(reply.createdAt) }}</span>
+                  </div>
+                </div>
+                <div class="reply-content text-gray-700">
+                  <p>{{ reply.content }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ฟอร์มตอบกลับ -->
+            <div v-if="comments && comments.length > 0" class="reply-form text-gray-700 mt-8!">
+              <textarea v-model="replyContents[comment.id]" placeholder="Write your reply..."></textarea>
+              <div class="reply-actions">
+                <button class="post-btn" @click="postReply(comment.id)" :disabled="!replyContents[comment.id]?.trim()">
+                  Post Reply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ฟอร์มโพสต์ความคิดเห็น -->
-      <div class="post-comment-card">
+      <div v-if="!isNoAdvisor && comments && comments.length == 0" class="post-comment-card p-5">
         <div class="user-avatar">
           <img :src="currentUser.avatar" :alt="currentUser.name" v-if="currentUser.avatar">
           <div class="avatar-placeholder" v-else>{{ currentUser.name.charAt(0) }}</div>
@@ -162,103 +238,20 @@ const getFileIcon = (file: { type: string }) => {
         <div class="comment-form">
           <div class="user-info">
             <span class="user-name">{{ currentUser.name }}</span>
-            <span class="user-role">{{ currentUser.role }}</span>
+            <span class="user-role">student</span>
           </div>
-          <textarea v-model="newComment" placeholder="Write your comment here..."
+          <textarea v-model="newComment" class="text-gray-700" placeholder="Write your comment here..."
             @keydown.enter.exact.prevent="postComment" @keydown.enter.shift.exact="newLine"></textarea>
-          <div class="comment-actions">
-            <button class="attach-file-btn" @click="triggerFileInput">
-              <i class="fas fa-paperclip"></i> Attach File
-            </button>
-            <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" multiple>
+          <div class="comment-actions float-right">
             <button class="post-btn" @click="postComment" :disabled="!newComment.trim() && !attachedFiles.length">
               Post Comment
             </button>
           </div>
-
-          <!-- แสดงไฟล์ที่แนบมา -->
-          <div class="attached-files" v-if="attachedFiles.length > 0">
-            <div v-for="(file, index) in attachedFiles" :key="index" class="file-item">
-              <span class="file-icon">
-                <i :class="getFileIcon(file)"></i>
-              </span>
-              <span class="file-name">{{ file.name }}</span>
-              <span class="file-size">({{ formatFileSize(file.size) }})</span>
-              <button @click="removeFile(index)" class="remove-file-btn">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
-
-      <!-- รายการความคิดเห็น -->
-      <div class="comments-list">
-        <div v-for="(comment, index) in comments" :key="comment.id" class="comment-card">
-          <div class="comment-header">
-            <div class="user-avatar">
-              <img :src="comment.author.avatar" :alt="comment.author.name" v-if="comment.author.avatar">
-              <div class="avatar-placeholder" v-else>{{ comment.author.name.charAt(0) }}</div>
-            </div>
-            <div class="user-info">
-              <span class="user-name">{{ comment.author.name }}</span>
-              <span class="user-role">{{ comment.author.role }}</span>
-              <span class="comment-time">{{ formatTime(comment.time) }}</span>
-            </div>
-          </div>
-
-          <div class="comment-content">
-            <p>{{ comment.content }}</p>
-
-            <!-- แสดงไฟล์แนบ -->
-            <div v-if="comment.files && comment.files.length > 0" class="comment-files">
-              <div v-for="(file, fileIndex) in comment.files" :key="fileIndex" class="file-item">
-                <a :href="file.url" target="_blank" class="file-link">
-                  <i :class="getFileIcon(file)"></i>
-                  <span>{{ file.name }}</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="comment-footer">
-            <button class="reply-btn" @click="toggleReplyForm(comment.id)">
-              <i class="fas fa-reply"></i> Reply
-            </button>
-
-            <!-- ฟอร์มตอบกลับ -->
-            <div v-if="activeReplyForm === comment.id" class="reply-form">
-              <textarea v-model="replyContents[comment.id]" placeholder="Write your reply..."></textarea>
-              <div class="reply-actions">
-                <button class="cancel-btn" @click="cancelReply">Cancel</button>
-                <button class="post-btn" @click="postReply(comment.id)" :disabled="!replyContents[comment.id]?.trim()">
-                  Post Reply
-                </button>
-              </div>
-            </div>
-
-            <!-- แสดงการตอบกลับ -->
-            <div v-if="comment.replies && comment.replies.length > 0" class="replies-list">
-              <div v-for="reply in comment.replies" :key="reply.id" class="reply-card">
-                <div class="reply-header">
-                  <div class="user-avatar small">
-                    <img :src="reply.author.avatar" :alt="reply.author.name" v-if="reply.author.avatar">
-                    <div class="avatar-placeholder" v-else>{{ reply.author.name.charAt(0) }}</div>
-                  </div>
-                  <div class="user-info">
-                    <span class="user-name">{{ reply.author.name }}</span>
-                    <span class="user-role">{{ reply.author.role }}</span>
-                    <span class="reply-time">{{ formatTime(reply.time) }}</span>
-                  </div>
-                </div>
-                <div class="reply-content">
-                  <p>{{ reply.content }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div v-if="isNoAdvisor && comments && comments.length == 0">
+      <p class="text-gray-700 text-center">ยังไม่มีอาจารย์ที่ปรึกษา</p>
     </div>
   </div>
 </template>

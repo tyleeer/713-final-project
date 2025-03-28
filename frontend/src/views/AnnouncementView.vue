@@ -49,6 +49,20 @@ const downloadFile = (fileUrl: string) => {
   link.click()
   document.body.removeChild(link)
 }
+
+const formatTime = (date: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23", // Ensures 24-hour format
+    timeZone: "Asia/Bangkok"
+  };
+  return new Date(date).toLocaleString("en-US", options); // Change to "th-TH" if needed
+};
+
 </script>
 
 <template>
@@ -110,7 +124,7 @@ const downloadFile = (fileUrl: string) => {
 
             <!-- Timestamp -->
             <div class="text-sm text-gray-500 mb-2">
-              เมื่อ: {{ new Date(announcement.createdAt).toLocaleString() }}
+              เมื่อ: {{ formatTime(announcement.createdAt) }} น.
             </div>
 
             <!-- Download Button -->

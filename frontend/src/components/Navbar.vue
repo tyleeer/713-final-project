@@ -11,11 +11,9 @@
         <RouterLink to="/login" class="nav-link" v-if="!isAuthenticated">Login</RouterLink>
         <RouterLink to="/register" class="nav-link" v-if="!isAuthenticated">Register</RouterLink>
         <RouterLink to="/advisorReg" class="nav-link" v-if="isAuthenticated && isAdmin">Add Advisor</RouterLink>
-
         <RouterLink to="/advisorList" class="nav-link" v-if="isAuthenticated && isAdmin">Advisor summary</RouterLink>
-
         <RouterLink to="/advisor-studentlist" class="nav-link" v-if="isAuthenticated && isAdvisor">Student List</RouterLink>
-
+        <RouterLink to="/student-comment" class="nav-link" v-if="isAuthenticated && isStudent">Comment</RouterLink>
         <a href="#" class="nav-link" v-if="isAuthenticated" @click.prevent="logout">Logout</a>
       </nav>
     </div>

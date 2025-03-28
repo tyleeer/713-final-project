@@ -73,9 +73,15 @@ const router = createRouter({
       component: () => import('../views/AdvisorListView.vue'),
     },
     {
-      path: '/comment',
-      name: 'comment',
-      component: () => import('../views/CommentView.vue'),
+      path: '/student-comment',
+      name: 'student-comment',
+      component: () => import('../views/StudentCommentView.vue'),
+    },
+    {
+      path: '/advisor-comment/:id',
+      name: 'advisor-comment',
+      component: () => import('../views/AdvisorCommentView.vue'),
+      props: true
     },
     {
       path: '/appointment',
