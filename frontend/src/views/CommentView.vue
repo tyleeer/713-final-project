@@ -1,30 +1,147 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref } from "vue";
 
 const comments = ref<any[]>([]);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
+const lastUpdated = ref<string>(new Date().toLocaleString());
 const searchQuery = ref<string>("");
-import axios from 'axios';
-const fetchStudents = async () => {
+const currentUser = ref({
+  id: "user-001",
+  name: "Chalisa Wongsa",
+  role: "Student",
+  avatar: "",
+});
+const newComment = ref<string>("");
+const attachedFiles = ref<File[]>([]);
+const activeReplyForm = ref<string | null>(null);
+
+const toggleReplyForm = (commentId: string) => {
+  activeReplyForm.value = activeReplyForm.value === commentId ? null : commentId;
+};
+
+const cancelReply = () => {
+  activeReplyForm.value = null;
+};
+const replyContents = ref<Record<string, string>>({});
+
+// Methods
+const newLine = () => {
+  const textarea = document.activeElement as HTMLTextAreaElement;
+  if (textarea) {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    textarea.value = textarea.value.substring(0, start) + "\n" + textarea.value.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + 1;
+    newComment.value = textarea.value;
+  }
+};
+
+const postComment = async () => {
+  if (!newComment.value.trim() && attachedFiles.value.length === 0) {
+    error.value = "Please enter a comment or attach a file.";
+    return;
+  }
+
+  loading.value = true;
+  error.value = null;
+
   try {
-    //const advisor_id = await AdvisorService.getAdvisorIdByUserId()
-    //const response = await StudentService.getStudentListByAdvisorId(advisor_id);
-    comments.value = response.data;
+    const newCommentData = {
+      id: `comment-${Date.now()}`,
+      author: { ...currentUser.value },
+      content: newComment.value,
+      createdAt: new Date().toISOString(),
+      files: attachedFiles.value.map((file) => ({
+        name: file.name,
+        size: file.size,
+        type: file.type || file.name.split(".").pop(),
+        url: URL.createObjectURL(file),
+      })),
+      replies: [],
+    };
+
+    comments.value.unshift(newCommentData);
+    newComment.value = "";
+    attachedFiles.value = [];
   } catch (err) {
-    error.value = 
-      "Error fetching students: " + (err instanceof Error ? err.message : err);
+    error.value = "Failed to post the comment.";
   } finally {
     loading.value = false;
   }
 };
 
+const handleFileUpload = (event: Event) => {
+  const files = (event.target as HTMLInputElement).files;
+  if (files) {
+    attachedFiles.value = [...attachedFiles.value, ...Array.from(files)];
+  }
+  (event.target as HTMLInputElement).value = ""; // Reset file input
+};
 
+const triggerFileInput = () => {
+  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+  if (fileInput) {
+    fileInput.click();
+  }
+};
 
-onMounted(fetchStudents);
+const removeFile = (index: number) => {
+  attachedFiles.value.splice(index, 1);
+};
+
+const postReply = (commentId: string) => {
+  if (!replyContents.value[commentId]?.trim()) {
+    error.value = "Reply content cannot be empty.";
+    return;
+  }
+
+  const replyData = {
+    id: `reply-${Date.now()}`,
+    author: { ...currentUser.value },
+    content: replyContents.value[commentId],
+    time: new Date().toISOString(),
+  };
+
+  const comment = comments.value.find((c) => c.id === commentId);
+  if (comment) {
+    comment.replies.push(replyData);
+  }
+
+  replyContents.value[commentId] = "";
+  activeReplyForm.value = null;
+};
+
+const formatTime = (date: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  return new Date(date).toLocaleDateString(undefined, options);
+};
+
+const formatFileSize = (bytes: number) => {
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  if (bytes === 0) return "0 Byte";
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
+};
+
+const getFileIcon = (file: { type: string }) => {
+  if (file.type.includes("pdf")) return "pdf-icon";
+  if (file.type.includes("word")) return "word-icon";
+  if (file.type.includes("excel")) return "excel-icon";
+  if (file.type.includes("powerpoint")) return "ppt-icon";
+  if (file.type.includes("image")) return "image-icon";
+  if (file.type.includes("zip") || file.type.includes("rar")) return "archive-icon";
+  return "file-icon";
+};
 </script>
+
 <template>
-  <!-- Discussion -->
   <div class="discussion-container">
     <div class="discussion-header">
       <h2>Discussion Board</h2>
@@ -47,28 +164,14 @@ onMounted(fetchStudents);
             <span class="user-name">{{ currentUser.name }}</span>
             <span class="user-role">{{ currentUser.role }}</span>
           </div>
-          <textarea
-            v-model="newComment"
-            placeholder="Write your comment here..."
-            @keydown.enter.exact.prevent="postComment"
-            @keydown.enter.shift.exact="newLine"
-          ></textarea>
+          <textarea v-model="newComment" placeholder="Write your comment here..."
+            @keydown.enter.exact.prevent="postComment" @keydown.enter.shift.exact="newLine"></textarea>
           <div class="comment-actions">
             <button class="attach-file-btn" @click="triggerFileInput">
               <i class="fas fa-paperclip"></i> Attach File
             </button>
-            <input
-              type="file"
-              ref="fileInput"
-              @change="handleFileUpload"
-              style="display: none;"
-              multiple
-            >
-            <button
-              class="post-btn"
-              @click="postComment"
-              :disabled="!newComment.trim() && !attachedFiles.length"
-            >
+            <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" multiple>
+            <button class="post-btn" @click="postComment" :disabled="!newComment.trim() && !attachedFiles.length">
               Post Comment
             </button>
           </div>
@@ -125,17 +228,10 @@ onMounted(fetchStudents);
 
             <!-- ฟอร์มตอบกลับ -->
             <div v-if="activeReplyForm === comment.id" class="reply-form">
-              <textarea
-                v-model="replyContents[comment.id]"
-                placeholder="Write your reply..."
-              ></textarea>
+              <textarea v-model="replyContents[comment.id]" placeholder="Write your reply..."></textarea>
               <div class="reply-actions">
                 <button class="cancel-btn" @click="cancelReply">Cancel</button>
-                <button
-                  class="post-btn"
-                  @click="postReply(comment.id)"
-                  :disabled="!replyContents[comment.id]?.trim()"
-                >
+                <button class="post-btn" @click="postReply(comment.id)" :disabled="!replyContents[comment.id]?.trim()">
                   Post Reply
                 </button>
               </div>
@@ -166,122 +262,6 @@ onMounted(fetchStudents);
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      currentUser: {
-        id: 'user-001',
-        name: 'Chalisa Wongsa',
-        role: 'Student',
-        avatar: ''
-      },
-      newComment: '',
-      attachedFiles: [], // เก็บไฟล์ที่แนบ
-      comments: [], // เก็บความคิดเห็นทั้งหมด
-      isLoading: false,
-      error: null,
-      activeReplyForm: null,
-      replyContents: {}
-    }
-  },
-  methods: {
-    // โพสต์ความคิดเห็นใหม่พร้อมไฟล์แนบ
-    async postComment() {
-      // ตรวจสอบว่ามีข้อความหรือไฟล์แนบ
-      if (!this.newComment.trim() && this.attachedFiles.length === 0) {
-        this.error = 'กรุณากรอกข้อความหรือแนบไฟล์'
-        return
-      }
-
-      this.isLoading = true
-      this.error = null
-
-      try {
-        // สร้าง FormData สำหรับส่งไปยังเซิร์ฟเวอร์
-        const formData = new FormData()
-        formData.append('content', this.newComment)
-        formData.append('authorId', this.currentUser.id)
-
-        // เพิ่มไฟล์แนบทั้งหมด
-        this.attachedFiles.forEach((file, index) => {
-          formData.append(`files[${index}]`, file)
-        })
-
-        // ในตัวอย่างนี้เราจะจำลองการทำงานโดยไม่เรียก API จริง
-        // แต่ใน production ควรเรียก API เช่น:
-        // const response = await axios.post('/api/comments', formData, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // })
-
-        // สร้างความคิดเห็นใหม่ (แบบจำลอง)
-        const newComment = {
-          id: `comment-${Date.now()}`,
-          author: { ...this.currentUser },
-          content: this.newComment,
-          createdAt: new Date().toISOString(),
-          files: this.attachedFiles.map(file => ({
-            name: file.name,
-            size: file.size,
-            type: file.type || file.name.split('.').pop(),
-            url: URL.createObjectURL(file) // ใน production ควรใช้ URL จากเซิร์ฟเวอร์
-          })),
-          replies: []
-        }
-
-        // เพิ่มความคิดเห็นใหม่เข้าในรายการ
-        this.comments.unshift(newComment)
-
-        // รีเซ็ตฟอร์มหลังโพสต์สำเร็จ
-        this.newComment = ''
-        this.attachedFiles = []
-
-      } catch (error) {
-        console.error('เกิดข้อผิดพลาดขณะโพสต์ความคิดเห็น:', error)
-        this.error = 'ไม่สามารถโพสต์ความคิดเห็นได้'
-      } finally {
-        this.isLoading = false
-      }
-    },
-
-    // จัดการเมื่อผู้ใช้เลือกไฟล์
-    handleFileUpload(event) {
-      const files = event.target.files
-      if (files && files.length > 0) {
-        // เพิ่มไฟล์ใหม่เข้าในรายการไฟล์ที่แนบ
-        this.attachedFiles = [...this.attachedFiles, ...Array.from(files)]
-      }
-      event.target.value = '' // รีเซ็ต input file
-    },
-
-    // ลบไฟล์ที่แนบออกจากรายการ
-    removeFile(index) {
-      this.attachedFiles.splice(index, 1)
-    },
-
-    // เปิดตัวเลือกไฟล์
-    triggerFileInput() {
-      this.$refs.fileInput.click()
-    },
-
-    // ฟังก์ชันอื่นๆ ที่จำเป็น...
-    formatTime(date) {
-      // ... รูปแบบการแสดงเวลา
-    },
-
-    formatFileSize(bytes) {
-      // ... รูปแบบการแสดงขนาดไฟล์
-    },
-
-    getFileIcon(file) {
-      // ... กำหนดไอคอนตามประเภทไฟล์
-    }
-  }
-}
-</script>
 
 <style scoped>
 /* สไตล์สำหรับส่วน Discussion */

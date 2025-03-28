@@ -11,6 +11,7 @@ import StudentChat from '../views/StudentChat.vue';
 import AdvisorListView from '../views/AdvisorListView.vue';
 
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -75,6 +76,11 @@ const router = createRouter({
       path: '/comment',
       name: 'comment',
       component: () => import('../views/CommentView.vue'),
+    },
+    {
+      path: '/appointment',
+      name: 'appointment',
+      component: () => import('../views/AdvisorAppointmentView.vue'),
     },
     {
       path: '/advisor-appointment',
